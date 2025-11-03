@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ផ្ទាំងគ្រប់គ្រងនិស្សិត - ប្រព័ន្ធគ្រប់គ្រងកម្មសិក្សា</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../static/css/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Modal styling */
+        
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg py-4 px-6">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-briefcase text-white"></i>
+                </div>
+                <span class="text-xl font-bold text-gray-800">ផ្ទាំងគ្រប់គ្រងនិស្សិត</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span id="currentUserInfo" class="text-gray-700"></span>
+                <button onclick="logout()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200">
+                    <i class="fas fa-sign-out-alt mr-2"></i>ចាកចេញ
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-6 py-8">
+        <!-- Welcome Section -->
+        <div class="bg-white rounded-2xl shadow-md p-6 mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2" id="welcomeMessage">សូមស្វាគមន៍!</h1>
+            <p class="text-gray-600" id="loginInfo"></p>
+        </div>
+
+        <!-- Current User Info -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- User Profile Card -->
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">ព័ត៌មានអ្នកប្រើប្រាស់បច្ចុប្បន្ន</h2>
+                <div class="space-y-3">
+                    <div class="flex justify-between border-b pb-2">
+                        <span class="text-gray-600">ឈ្មោះអ្នកប្រើប្រាស់:</span>
+                        <span class="font-medium" id="currentUsername"></span>
+                    </div>
+                    <div class="flex justify-between border-b pb-2">
+                        <span class="text-gray-600">អ៊ីមែល:</span>
+                        <span class="font-medium" id="currentEmail"></span>
+                    </div>
+                    <div class="flex justify-between border-b pb-2">
+                        <span class="text-gray-600">តួនាទី:</span>
+                        <span class="font-medium" id="currentRole"></span>
+                    </div>
+                    <div class="flex justify-between border-b pb-2">
+                        <span class="text-gray-600">ពេលវេលាចូល:</span>
+                        <span class="font-medium" id="currentLoginTime"></span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">កាលបរិច្ឆេទ:</span>
+                        <span class="font-medium" id="currentDate"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">សកម្មភាពរហ័ស</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="showStudentManagement()" class="bg-blue-100 text-blue-700 p-4 rounded-lg hover:bg-blue-200 transition duration-200">
+                        <i class="fas fa-users text-xl mb-2"></i>
+                        <div>និស្សិតទាំងអស់</div>
+                    </button>
+                    <button onclick="showCourseSearch()" class="bg-green-100 text-green-700 p-4 rounded-lg hover:bg-green-200 transition duration-200">
+                        <i class="fas fa-search text-xl mb-2"></i>
+                        <div>ស្វែងរកកម្មសិក្សា</div>
+                    </button>
+                    <button onclick="showRequestForm()" class="bg-purple-100 text-purple-700 p-4 rounded-lg hover:bg-purple-200 transition duration-200">
+                        <i class="fas fa-file-alt text-xl mb-2"></i>
+                        <div>ពាក្យស្នើសុំ</div>
+                    </button>
+                    <button onclick="showProgress()" class="bg-orange-100 text-orange-700 p-4 rounded-lg hover:bg-orange-200 transition duration-200">
+                        <i class="fas fa-chart-line text-xl mb-2"></i>
+                        <div>វឌ្ឍនភាព</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Student Management Section -->
+        <div class="bg-white rounded-2xl shadow-md p-6 mb-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold text-gray-800">ការគ្រប់គ្រងនិស្សិត</h2>
+                <button onclick="showAddStudentModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200">
+                    <i class="fas fa-plus mr-2"></i>បន្ថែមនិស្សិត
+                </button>
+            </div>
+            <div class="mb-4">
+                <input type="text" id="studentSearchInput" placeholder="ស្វែងរកនិស្សិត..." class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ល.រ</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ឈ្មោះនិស្សិត</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">អ៊ីមែល</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ភេទ</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ថ្ងៃខែឆ្នាំកំណើត</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">កម្មវិធីសិក្សា</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">សកម្មភាព</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTable" class="divide-y divide-gray-200">
+                        <!-- Student data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Login History -->
+        <div class="bg-white rounded-2xl shadow-md p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">ប្រវត្តិការចូលប្រើប្រាស់</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ឈ្មោះអ្នកប្រើប្រាស់</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">អ៊ីមែល</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">តួនាទី</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ពេលវេលាចូល</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">កាលបរិច្ឆេទ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="loginHistoryTable" class="divide-y divide-gray-200">
+                        <!-- Login history will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Management Modal -->
+    <div id="studentManagementModal" class="modal">
+        <div class="modal-content w-11/12 md:w-3/4 lg:w-2/3">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-gray-800">ការគ្រប់គ្រងនិស្សិត</h2>
+                <button onclick="closeModal('studentManagementModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <input type="text" id="studentManagementSearchInput" placeholder="ស្វែងរកនិស្សិត..." class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ល.រ</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ឈ្មោះនិស្សិត</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">អ៊ីមែល</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ភេទ</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">កម្មវិធីសិក្សា</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">សកម្មភាព</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentManagementTable" class="divide-y divide-gray-200">
+                        <!-- Student management data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Student Modal -->
+    <div id="studentFormModal" class="modal">
+        <div class="modal-content w-11/12 md:w-2/3 lg:w-1/2">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-gray-800" id="studentFormTitle">បន្ថែមនិស្សិត</h2>
+                <button onclick="closeModal('studentFormModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="studentForm">
+                <input type="hidden" id="studentId">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="studentName">ឈ្មោះនិស្សិត</label>
+                        <input type="text" id="studentName" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="studentEmail">អ៊ីមែល</label>
+                        <input type="email" id="studentEmail" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="studentGender">ភេទ</label>
+                        <select id="studentGender" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                            <option value="">ជ្រើសរើសភេទ</option>
+                            <option value="ប្រុស">ប្រុស</option>
+                            <option value="ស្រី">ស្រី</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="studentDob">ថ្ងៃខែឆ្នាំកំណើត</label>
+                        <input type="date" id="studentDob" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2" for="studentProgram">កម្មវិធីសិក្សា</label>
+                    <select id="studentProgram" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                        <option value="">ជ្រើសរើសកម្មវិធីសិក្សា</option>
+                        <option value="វិទ្យាសាស្ត្រកុំព្យូទ័រ">វិទ្យាសាស្ត្រកុំព្យូទ័រ</option>
+                        <option value="វិស្វកម្មពត៌មានវិទ្យា">វិស្វកម្មពត៌មានវិទ្យា</option>
+                        <option value="គ្រប់គ្រងអាជីវកម្ម">គ្រប់គ្រងអាជីវកម្ម</option>
+                        <option value="គណនេយ្យ">គណនេយ្យ</option>
+                    </select>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" onclick="closeModal('studentFormModal')" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg mr-2 hover:bg-gray-400 transition duration-200">បោះបង់</button>
+                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-200">រក្សាទុក</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteConfirmationModal" class="modal">
+        <div class="modal-content w-11/12 md:w-1/3">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+                    <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mt-4" id="deleteConfirmationTitle">លុបនិស្សិត</h3>
+                <div class="mt-2">
+                    <p class="text-sm text-gray-500">តើអ្នកប្រាកដថាចង់លុបនិស្សិតនេះឬ? សកម្មភាពនេះមិនអាចត្រឡប់ក្រោយបានទេ។</p>
+                </div>
+                <div class="mt-6 flex justify-center space-x-4">
+                    <button type="button" onclick="closeModal('deleteConfirmationModal')" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition duration-200">បោះបង់</button>
+                    <button type="button" id="confirmDeleteButton" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200">លុប</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Course Search Modal -->
+    <div id="courseSearchModal" class="modal">
+        <div class="modal-content w-11/12 md:w-3/4 lg:w-2/3">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-gray-800">ស្វែងរកកម្មសិក្សា</h2>
+                <button onclick="closeModal('courseSearchModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <input type="text" id="courseSearchInput" placeholder="ស្វែងរកកម្មសិក្សា..." class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="courseList">
+                <!-- Courses will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Course Details Modal -->
+    <div id="courseDetailsModal" class="modal">
+        <div class="modal-content w-11/12 md:w-2/3 lg:w-1/2">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-gray-800" id="courseDetailsTitle">ព័ត៌មានលម្អិតអំពីកម្មសិក្សា</h2>
+                <button onclick="closeModal('courseDetailsModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="courseDetailsContent">
+                <!-- Course details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Request Form Modal -->
+    <div id="requestFormModal" class="modal">
+        <div class="modal-content w-11/12 md:w-2/3 lg:w-1/2">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-gray-800">ពាក្យស្នើសុំ</h2>
+                <button onclick="closeModal('requestFormModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="requestForm">
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2" for="requestType">ប្រភេទសំណើ</label>
+                    <select id="requestType" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                        <option value="">ជ្រើសរើសប្រភេទសំណើ</option>
+                        <option value="course_change">ស្នើសុំប្តូរកម្មសិក្សា</option>
+                        <option value="document_request">ស្នើសុំឯកសារ</option>
+                        <option value="leave_request">ស្នើសុំច្បាប់ឈប់</option>
+                        <option value="other">ផ្សេងៗ</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2" for="requestSubject">ប្រធានបទ</label>
+                    <input type="text" id="requestSubject" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2" for="requestDescription">ពិពណ៌នា</label>
+                    <textarea id="requestDescription" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required></textarea>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" onclick="closeModal('requestFormModal')" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg mr-2 hover:bg-gray-400 transition duration-200">បោះបង់</button>
+                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-200">ដាក់ស្នើ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Progress Modal -->
+    <div id="progressModal" class="modal">
+        <div class="modal-content w-11/12 md:w-3/4 lg:w-2/3">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-gray-800">វឌ្ឍនភាពការសិក្សា</h2>
+                <button onclick="closeModal('progressModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">កម្រិតសម្រេចរួម</h3>
+                <div class="w-full bg-gray-200 rounded-full h-4">
+                    <div id="overallProgress" class="bg-green-600 h-4 rounded-full" style="width: 65%"></div>
+                </div>
+                <div class="flex justify-between mt-1">
+                    <span class="text-sm text-gray-600">0%</span>
+                    <span class="text-sm text-gray-600">65%</span>
+                    <span class="text-sm text-gray-600">100%</span>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-blue-800 mb-2">កម្មសិក្សាដែលបានបញ្ចប់</h4>
+                    <ul class="list-disc list-inside text-blue-700">
+                        <li>កម្មវិធីវិទ្យាសាស្ត្រកុំព្យូទ័រ</li>
+                        <li>ភាសាកុំព្យូទ័រ C++</li>
+                        <li>រចនាសម្ព័ន្ធទិន្នន័យ</li>
+                    </ul>
+                </div>
+                <div class="bg-yellow-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-yellow-800 mb-2">កម្មសិក្សាកំពុងសិក្សា</h4>
+                    <ul class="list-disc list-inside text-yellow-700">
+                        <li>បណ្តាញកុំព្យូទ័រ</li>
+                        <li>ប្រព័ន្ធគ្រប់គ្រងមូលដ្ឋានទិន្នន័យ</li>
+                        <li>វិស្វកម្មផ្នែកទន់</li>
+                    </ul>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-green-800 mb-2">ពិន្ទុជាមធ្យម</h4>
+                    <div class="text-3xl font-bold text-green-700">3.45</div>
+                    <p class="text-green-600">ពីពិន្ទុអតិបរមា 4.00</p>
+                </div>
+                <div class="bg-purple-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-purple-800 mb-2">កម្មសិក្សាដែលនៅសល់</h4>
+                    <ul class="list-disc list-inside text-purple-700">
+                        <li>សុវត្ថិភាពព័ត៌មានវិទ្យា</li>
+                        <li>ប្រព័ន្ធប្រតិបត្តិការ</li>
+                        <li>ការគណនាប្រកបដោយពហុភាព</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for courses
+        const courses = [
+            {
+                id: 1,
+                name: "កម្មវិធីវិទ្យាសាស្ត្រកុំព្យូទ័រ",
+                code: "CS101",
+                description: "កម្មសិក្សានេះផ្តល់ជំនាញមូលដ្ឋានអំពីការសរសេរកម្មវិធី និងគោលគំនិតនៃការគណនា។",
+                instructor: "អ្នកបង្រៀន សុខ សំណាង",
+                credits: 3,
+                duration: "15 សប្តាហ៍",
+                schedule: "ច័ន្ទ និង ពុធ 08:00-10:00"
+            },
+            {
+                id: 2,
+                name: "ភាសាកុំព្យូទ័រ C++",
+                code: "CS102",
+                description: "កម្មសិក្សានេះផ្តោតលើការសរសេរកម្មវិធីដោយប្រើភាសា C++ និងគោលគំនិត OOP។",
+                instructor: "អ្នកបង្រៀន ម៉ៅ រតនា",
+                credits: 3,
+                duration: "15 សប្តាហ៍",
+                schedule: "អង្គារ និង សុក្រ 10:00-12:00"
+            },
+            {
+                id: 3,
+                name: "រចនាសម្ព័ន្ធទិន្នន័យ",
+                code: "CS201",
+                description: "កម្មសិក្សានេះផ្តល់ចំនេះដឹងអំពីរចនាសម្ព័ន្ធទិន្នន័យ និងក្បួនដោះស្រាយ។",
+                instructor: "អ្នកបង្រៀន វណ្ណ សុផាត",
+                credits: 3,
+                duration: "15 សប្តាហ៍",
+                schedule: "ពុធ និង សៅរ៍ 14:00-16:00"
+            },
+            {
+                id: 4,
+                name: "បណ្តាញកុំព្យូទ័រ",
+                code: "CS301",
+                description: "កម្មសិក្សានេះផ្តល់ចំនេះដឹងអំពីបណ្តាញកុំព្យូទ័រ និងប្រូតូកូល។",
+                instructor: "អ្នកបង្រៀន សុខ សំអាត",
+                credits: 3,
+                duration: "15 សប្តាហ៍",
+                schedule: "ច័ន្ទ និង ព្រហស្បតិ៍ 08:00-10:00"
+            },
+            {
+                id: 5,
+                name: "ប្រព័ន្ធគ្រប់គ្រងមូលដ្ឋានទិន្នន័យ",
+                code: "CS302",
+                description: "កម្មសិក្សានេះផ្តល់ជំនាញអំពីការរចនា និងគ្រប់គ្រងមូលដ្ឋានទិន្នន័យ។",
+                instructor: "អ្នកបង្រៀន កើត សុភាព",
+                credits: 3,
+                duration: "15 សប្តាហ៍",
+                schedule: "អង្គារ និង សុក្រ 14:00-16:00"
+            },
+            {
+                id: 6,
+                name: "វិស្វកម្មផ្នែកទន់",
+                code: "CS401",
+                description: "កម្មសិក្សានេះផ្តល់ចំនេះដឹងអំពីដំណើរការអភិវឌ្ឍន៍កម្មវិធី។",
+                instructor: "អ្នកបង្រៀន សំណាង សុខា",
+                credits: 3,
+                duration: "15 សប្តាហ៍",
+                schedule: "ពុធ និង សៅរ៍ 10:00-12:00"
+            }
+        ];
+
+        // Sample data for students
+        let students = JSON.parse(localStorage.getItem('students')) || [
+            {
+                id: 1,
+                name: "យ៉ាង សុខណា",
+                email: "sokna.yang@example.com",
+                gender: "ស្រី",
+                dob: "2002-05-15",
+                program: "វិទ្យាសាស្ត្រកុំព្យូទ័រ"
+            },
+            {
+                id: 2,
+                name: "គឹម សុខហង្ស",
+                email: "sokhang.kim@example.com",
+                gender: "ប្រុស",
+                dob: "2001-08-22",
+                program: "វិស្វកម្មពត៌មានវិទ្យា"
+            },
+            {
+                id: 3,
+                name: "ម៉ាលីស សុខគីម",
+                email: "sokhim.malis@example.com",
+                gender: "ស្រី",
+                dob: "2003-03-10",
+                program: "គ្រប់គ្រងអាជីវកម្ម"
+            },
+            {
+                id: 4,
+                name: "ណារ៉ុង សុផាត",
+                email: "sophat.narong@example.com",
+                gender: "ប្រុស",
+                dob: "2002-11-30",
+                program: "គណនេយ្យ"
+            }
+        ];
+
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            
+            if (!currentUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Display current user info
+            document.getElementById('welcomeMessage').textContent = `សូមស្វាគមន៍, ${currentUser.username}!`;
+            document.getElementById('loginInfo').textContent = `អ្នកបានចូលជានិស្សិតនៅពេល ${currentUser.loginTime}`;
+            
+            document.getElementById('currentUsername').textContent = currentUser.username;
+            document.getElementById('currentEmail').textContent = currentUser.email;
+            document.getElementById('currentRole').textContent = currentUser.role === 'student' ? 'និស្សិត' : 'អ្នកគ្រប់គ្រង';
+            document.getElementById('currentLoginTime').textContent = currentUser.loginTime;
+            document.getElementById('currentDate').textContent = currentUser.date;
+
+            // Display in navigation
+            document.getElementById('currentUserInfo').textContent = `${currentUser.username} (${currentUser.role === 'student' ? 'និស្សិត' : 'អ្នកគ្រប់គ្រង'})`;
+
+            // Display login history
+            displayLoginHistory();
+
+            // Display students
+            displayStudents();
+
+            // Set profile data
+            document.getElementById('profileUsername').textContent = currentUser.username;
+            document.getElementById('profileEmail').textContent = currentUser.email;
+            document.getElementById('profileRole').textContent = currentUser.role === 'student' ? 'និស្សិត' : 'អ្នកគ្រប់គ្រង';
+        });
+
+        function displayLoginHistory() {
+            const loginHistory = JSON.parse(localStorage.getItem('loginHistory')) || [];
+            const tableBody = document.getElementById('loginHistoryTable');
+            
+            tableBody.innerHTML = '';
+            
+            if (loginHistory.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="px-4 py-8 text-center text-gray-500">
+                            មិនទាន់មានប្រវត្តិការចូលប្រើប្រាស់
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            // Filter to show only student logins and remove duplicates
+            const uniqueStudentLogins = [];
+            const seenStudents = new Set();
+            
+            loginHistory.forEach(user => {
+                if (user.role === 'student') {
+                    const studentKey = `${user.username}-${user.email}`;
+                    if (!seenStudents.has(studentKey)) {
+                        seenStudents.add(studentKey);
+                        uniqueStudentLogins.push(user);
+                    }
+                }
+            });
+            
+            uniqueStudentLogins.forEach(user => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-4 py-3 text-sm text-gray-900">${user.username}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${user.email}</td>
+                    <td class="px-4 py-3 text-sm">
+                        <span class="px-2 py-1 rounded-full ${user.role === 'student' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'}">
+                            ${user.role === 'student' ? 'និស្សិត' : 'អ្នកគ្រប់គ្រង'}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${user.loginTime}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${user.date}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function displayStudents() {
+            const studentTable = document.getElementById('studentTable');
+            studentTable.innerHTML = '';
+            
+            if (students.length === 0) {
+                studentTable.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="px-4 py-8 text-center text-gray-500">
+                            មិនទាន់មានទិន្នន័យនិស្សិត
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            students.forEach((student, index) => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-4 py-3 text-sm text-gray-900">${index + 1}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${student.name}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${student.email}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${student.gender}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${formatDate(student.dob)}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${student.program}</td>
+                    <td class="px-4 py-3 text-sm">
+                        <button onclick="editStudent(${student.id})" class="bg-blue-100 text-blue-700 px-3 py-1 rounded mr-2 hover:bg-blue-200 transition duration-200">
+                            <i class="fas fa-edit mr-1"></i>កែប្រែ
+                        </button>
+                        <button onclick="confirmDeleteStudent(${student.id})" class="bg-red-100 text-red-700 px-3 py-1 rounded hover:bg-red-200 transition duration-200">
+                            <i class="fas fa-trash mr-1"></i>លុប
+                        </button>
+                    </td>
+                `;
+                studentTable.appendChild(row);
+            });
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('km-KH');
+        }
+
+        function logout() {
+            // Clear current user session
+            localStorage.removeItem('currentUser');
+            
+            // Redirect to login page
+            window.location.href = 'login';
+        }
+
+        // Modal functions
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Student Management functionality
+        function showStudentManagement() {
+            showModal('studentManagementModal');
+            displayStudentManagementTable();
+        }
+
+        function displayStudentManagementTable() {
+            const studentManagementTable = document.getElementById('studentManagementTable');
+            studentManagementTable.innerHTML = '';
+            
+            if (students.length === 0) {
+                studentManagementTable.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="px-4 py-8 text-center text-gray-500">
+                            មិនទាន់មានទិន្នន័យនិស្សិត
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            students.forEach((student, index) => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-4 py-3 text-sm text-gray-900">${index + 1}</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${student.name}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${student.email}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${student.gender}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${student.program}</td>
+                    <td class="px-4 py-3 text-sm">
+                        <button onclick="editStudent(${student.id})" class="bg-blue-100 text-blue-700 px-3 py-1 rounded mr-2 hover:bg-blue-200 transition duration-200">
+                            <i class="fas fa-edit mr-1"></i>កែប្រែ
+                        </button>
+                        <button onclick="confirmDeleteStudent(${student.id})" class="bg-red-100 text-red-700 px-3 py-1 rounded hover:bg-red-200 transition duration-200">
+                            <i class="fas fa-trash mr-1"></i>លុប
+                        </button>
+                    </td>
+                `;
+                studentManagementTable.appendChild(row);
+            });
+        }
+
+        function showAddStudentModal() {
+            document.getElementById('studentFormTitle').textContent = 'បន្ថែមនិស្សិត';
+            document.getElementById('studentForm').reset();
+            document.getElementById('studentId').value = '';
+            showModal('studentFormModal');
+        }
+
+        function editStudent(id) {
+            const student = students.find(s => s.id === id);
+            if (!student) return;
+            
+            document.getElementById('studentFormTitle').textContent = 'កែប្រែនិស្សិត';
+            document.getElementById('studentId').value = student.id;
+            document.getElementById('studentName').value = student.name;
+            document.getElementById('studentEmail').value = student.email;
+            document.getElementById('studentGender').value = student.gender;
+            document.getElementById('studentDob').value = student.dob;
+            document.getElementById('studentProgram').value = student.program;
+            
+            showModal('studentFormModal');
+        }
+
+        function confirmDeleteStudent(id) {
+            const student = students.find(s => s.id === id);
+            if (!student) return;
+            
+            document.getElementById('deleteConfirmationTitle').textContent = `លុបនិស្សិត ${student.name}`;
+            document.getElementById('confirmDeleteButton').onclick = () => deleteStudent(id);
+            
+            showModal('deleteConfirmationModal');
+        }
+
+        function deleteStudent(id) {
+            students = students.filter(s => s.id !== id);
+            localStorage.setItem('students', JSON.stringify(students));
+            
+            displayStudents();
+            displayStudentManagementTable();
+            closeModal('deleteConfirmationModal');
+        }
+
+        // Handle student form submission
+        document.getElementById('studentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('studentId').value;
+            const name = document.getElementById('studentName').value;
+            const email = document.getElementById('studentEmail').value;
+            const gender = document.getElementById('studentGender').value;
+            const dob = document.getElementById('studentDob').value;
+            const program = document.getElementById('studentProgram').value;
+            
+            if (id) {
+                // Edit existing student
+                const index = students.findIndex(s => s.id === parseInt(id));
+                if (index !== -1) {
+                    students[index] = { id: parseInt(id), name, email, gender, dob, program };
+                }
+            } else {
+                // Add new student
+                const newId = students.length > 0 ? Math.max(...students.map(s => s.id)) + 1 : 1;
+                students.push({ id: newId, name, email, gender, dob, program });
+            }
+            
+            localStorage.setItem('students', JSON.stringify(students));
+            
+            displayStudents();
+            displayStudentManagementTable();
+            closeModal('studentFormModal');
+        });
+
+        // Course Search functionality
+        function showCourseSearch() {
+            showModal('courseSearchModal');
+            displayCourses();
+        }
+
+        function displayCourses() {
+            const courseList = document.getElementById('courseList');
+            courseList.innerHTML = '';
+            
+            courses.forEach(course => {
+                const courseCard = document.createElement('div');
+                courseCard.className = 'bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200';
+                courseCard.innerHTML = `
+                    <h3 class="font-semibold text-lg text-gray-800 mb-2">${course.name}</h3>
+                    <p class="text-gray-600 text-sm mb-3">${course.description.substring(0, 100)}...</p>
+                    <div class="flex justify-between text-sm text-gray-500 mb-3">
+                        <span>កូដ: ${course.code}</span>
+                        <span>ឥណទាន: ${course.credits}</span>
+                    </div>
+                    <button onclick="showCourseDetails(${course.id})" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200">
+                        មើលព័ត៌មានលម្អិត
+                    </button>
+                `;
+                courseList.appendChild(courseCard);
+            });
+        }
+
+        function showCourseDetails(courseId) {
+            const course = courses.find(c => c.id === courseId);
+            if (!course) return;
+            
+            document.getElementById('courseDetailsTitle').textContent = course.name;
+            
+            const courseDetailsContent = document.getElementById('courseDetailsContent');
+            courseDetailsContent.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">កូដកម្មសិក្សា:</span>
+                        <span class="font-medium">${course.code}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">អ្នកបង្រៀន:</span>
+                        <span class="font-medium">${course.instructor}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">ចំនួនឥណទាន:</span>
+                        <span class="font-medium">${course.credits}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">រយៈពេល:</span>
+                        <span class="font-medium">${course.duration}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">ពេលវេលាសិក្សា:</span>
+                        <span class="font-medium">${course.schedule}</span>
+                    </div>
+                    <div>
+                        <span class="text-gray-600 block mb-2">ពិពណ៌នា:</span>
+                        <p class="text-gray-700">${course.description}</p>
+                    </div>
+                    <div class="flex justify-end mt-6">
+                        <button onclick="closeModal('courseDetailsModal')" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg mr-2 hover:bg-gray-400 transition duration-200">បិទ</button>
+                        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200">ចុះឈ្មោះ</button>
+                    </div>
+                </div>
+            `;
+            
+            closeModal('courseSearchModal');
+            showModal('courseDetailsModal');
+        }
+
+        // Request Form functionality
+        function showRequestForm() {
+            showModal('requestFormModal');
+        }
+
+        // Handle request form submission
+        document.getElementById('requestForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const requestType = document.getElementById('requestType').value;
+            const requestSubject = document.getElementById('requestSubject').value;
+            const requestDescription = document.getElementById('requestDescription').value;
+            
+            // In a real application, you would send this data to a server
+            alert(`សំណើរបស់អ្នកត្រូវបានដាក់ជូនដោយជោគជ័យ!\nប្រភេទ: ${requestType}\nប្រធានបទ: ${requestSubject}`);
+            
+            // Reset form
+            document.getElementById('requestForm').reset();
+            closeModal('requestFormModal');
+        });
+
+        // Progress functionality
+        function showProgress() {
+            showModal('progressModal');
+        }
+
+        // Student search functionality
+        document.getElementById('studentSearchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const studentRows = document.querySelectorAll('#studentTable tr');
+            
+            studentRows.forEach(row => {
+                const studentName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                if (studentName.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Student management search functionality
+        document.getElementById('studentManagementSearchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const studentRows = document.querySelectorAll('#studentManagementTable tr');
+            
+            studentRows.forEach(row => {
+                const studentName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                if (studentName.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Course search filtering
+        document.getElementById('courseSearchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const courseCards = document.querySelectorAll('#courseList > div');
+            
+            courseCards.forEach(card => {
+                const courseName = card.querySelector('h3').textContent.toLowerCase();
+                if (courseName.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

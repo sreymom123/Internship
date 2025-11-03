@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ផ្ទាំងគ្រប់គ្រងអ្នកគ្រប់គ្រង - ប្រព័ន្ធគ្រប់គ្រងកម្មសិក្សា</title>
+    <link rel="stylesheet" href="../static/css/main.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            border-radius: 0.5rem;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        /* Subject documentation styling */
+        .subject-doc h5 {
+            color: #4b5563;
+            font-weight: 600;
+        }
+        .subject-doc p {
+            margin-bottom: 0.5rem;
+            color: #6b7280;
+        }
+        /* Report card styling */
+        .report-card {
+            transition: transform 0.2s;
+        }
+        .report-card:hover {
+            transform: translateY(-2px);
+        }
+        /* Progress bar styling */
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            background-color: #e5e7eb;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        /* Tab styling */
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab-button.active {
+            border-bottom-color: #3b82f6;
+            color: #3b82f6;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg py-4 px-6">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-user-shield text-white"></i>
+                </div>
+                <span class="text-xl font-bold text-gray-800">ផ្ទាំងគ្រប់គ្រងអ្នកគ្រប់គ្រង</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span id="currentUserInfo" class="text-gray-700"></span>
+                <button onclick="logout()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200">
+                    <i class="fas fa-sign-out-alt mr-2"></i>ចាកចេញ
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-6 py-8">
+        <!-- Welcome Section -->
+        <div class="bg-white rounded-2xl shadow-md p-6 mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2" id="welcomeMessage">សូមស្វាគមន៍ អ្នកគ្រប់គ្រង!</h1>
+            <p class="text-gray-600" id="loginInfo"></p>
+        </div>
+
+        <!-- Current Admin Info -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <!-- Admin Profile Card -->
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">ព័ត៌មានអ្នកគ្រប់គ្រង</h2>
+                <div class="space-y-3">
+                    <div class="flex justify-between border-b pb-2">
+                        <span class="text-gray-600">ឈ្មោះអ្នកប្រើប្រាស់:</span>
+                        <span class="font-medium" id="currentUsername"></span>
+                    </div>
+                    <div class="flex justify-between border-b pb-2">
+                        <span class="text-gray-600">អ៊ីមែល:</span>
+                        <span class="font-medium" id="currentEmail"></span>
+                    </div>
+                    <div class="flex justify-between border-b pb-2">
+                        <span class="text-gray-600">តួនាទី:</span>
+                        <span class="font-medium text-purple-600" id="currentRole">អ្នកគ្រប់គ្រង</span>
+                    </div>
+                    <div class="flex justify-between border-b pb-2">
+                        <span class="text-gray-600">ពេលវេលាចូល:</span>
+                        <span class="font-medium" id="currentLoginTime"></span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">កាលបរិច្ឆេទ:</span>
+                        <span class="font-medium" id="currentDate"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Card -->
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">ស្ថិតិប្រព័ន្ធ</h2>
+                <div class="space-y-4">
+                    <button onclick="showTotalStudents()" class="w-full flex items-center justify-between p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition duration-200">
+                        <div class="flex items-center">
+                            <i class="fas fa-user-graduate text-blue-600 text-xl mr-3"></i>
+                            <span class="text-gray-700">និស្សិតសរុប</span>
+                        </div>
+                        <span class="text-2xl font-bold text-blue-600" id="totalStudents">0</span>
+                    </button>
+                    <button onclick="showTodayLogins()" class="w-full flex items-center justify-between p-3 bg-green-50 rounded-lg hover:bg-green-100 transition duration-200">
+                        <div class="flex items-center">
+                            <i class="fas fa-sign-in-alt text-green-600 text-xl mr-3"></i>
+                            <span class="text-gray-700">ការចូលថ្ងៃនេះ</span>
+                        </div>
+                        <span class="text-2xl font-bold text-green-600" id="todayLogins">0</span>
+                    </button>
+                    <button onclick="showActiveDocuments()" class="w-full flex items-center justify-between p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition duration-200">
+                        <div class="flex items-center">
+                            <i class="fas fa-file-alt text-purple-600 text-xl mr-3"></i>
+                            <span class="text-gray-700">ឯកសារសកម្ម</span>
+                        </div>
+                        <span class="text-2xl font-bold text-purple-600" id="activeDocuments">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">សកម្មភាពរហ័ស</h2>
+                <div class="space-y-3">
+                    <button onclick="showDocumentSection()" class="w-full bg-blue-100 text-blue-700 p-3 rounded-lg hover:bg-blue-200 transition duration-200 text-left">
+                        <i class="fas fa-edit mr-2"></i>កែសម្រួលឯកសារ
+                    </button>
+                    <button onclick="showStudentSection()" class="w-full bg-green-100 text-green-700 p-3 rounded-lg hover:bg-green-200 transition duration-200 text-left">
+                        <i class="fas fa-users mr-2"></i>មើលនិស្សិត
+                    </button>
+                    <button onclick="showStudentProgress()" class="w-full bg-yellow-100 text-yellow-700 p-3 rounded-lg hover:bg-yellow-200 transition duration-200 text-left">
+                        <i class="fas fa-chart-line mr-2"></i>វឌ្ឍនភាពនិស្សិត
+                    </button>
+                    <button onclick="showReports()" class="w-full bg-purple-100 text-purple-700 p-3 rounded-lg hover:bg-purple-200 transition duration-200 text-left">
+                        <i class="fas fa-chart-bar mr-2"></i>របាយការណ៍
+                    </button>
+                    <button onclick="showSettings()" class="w-full bg-orange-100 text-orange-700 p-3 rounded-lg hover:bg-orange-200 transition duration-200 text-left">
+                        <i class="fas fa-cog mr-2"></i>ការកំណត់
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs for Student Management and Progress -->
+        <div class="bg-white rounded-2xl shadow-md mb-8">
+            <div class="border-b border-gray-200">
+                <div class="flex">
+                    <button id="studentTab" class="tab-button active" onclick="switchTab('student')">
+                        <i class="fas fa-users mr-2"></i>ការគ្រប់គ្រងនិស្សិត
+                    </button>
+                    <button id="progressTab" class="tab-button" onclick="switchTab('progress')">
+                        <i class="fas fa-chart-line mr-2"></i>វឌ្ឍនភាពនិស្សិត
+                    </button>
+                </div>
+            </div>
+
+            <!-- Student Management Section -->
+            <div id="studentSection" class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">ការគ្រប់គ្រងនិស្សិត</h2>
+                    <div class="flex space-x-3">
+                        <div class="relative">
+                            <input 
+                                type="text" 
+                                id="studentSearch" 
+                                class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                                placeholder="ស្វែងរកនិស្សិត..."
+                            >
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                        <button onclick="refreshStudentData()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200">
+                            <i class="fas fa-sync-alt mr-2"></i>ផ្ទុកឡើងវិញ
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ឈ្មោះអ្នកប្រើប្រាស់</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">អ៊ីមែល</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">តួនាទី</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ពេលវេលាចូលចុងក្រោយ</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ចំនួនដងចូល</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">សកម្មភាព</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentTable" class="divide-y divide-gray-200">
+                            <!-- Student data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="noStudentsMessage" class="text-center py-8 text-gray-500 hidden">
+                    <i class="fas fa-users text-4xl mb-4 text-gray-300"></i>
+                    <p>មិនទាន់មាននិស្សិតចូលប្រើប្រាស់ប្រព័ន្ធនៅឡើយ</p>
+                </div>
+            </div>
+
+            <!-- Student Progress Section -->
+            <div id="progressSection" class="p-6 hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">វឌ្ឍនភាពនិស្សិត</h2>
+                    <div class="flex space-x-3">
+                        <div class="relative">
+                            <input 
+                                type="text" 
+                                id="progressSearch" 
+                                class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                                placeholder="ស្វែងរកនិស្សិត..."
+                            >
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                        <select id="subjectFilter" class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="all">មុខវិជ្ជាទាំងអស់</option>
+                            <!-- Subject options will be populated here -->
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ឈ្មោះនិស្សិត</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">មុខវិជ្ជា</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ភាពរីកចម្រើន</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ពិន្ទុ</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ស្ថានភាព</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">សកម្មភាព</th>
+                            </tr>
+                        </thead>
+                        <tbody id="progressTable" class="divide-y divide-gray-200">
+                            <!-- Student progress data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="noProgressMessage" class="text-center py-8 text-gray-500 hidden">
+                    <i class="fas fa-chart-line text-4xl mb-4 text-gray-300"></i>
+                    <p>មិនទាន់មានទិន្នន័យវឌ្ឍនភាពនៅឡើយ</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Document Management Section -->
+        <div id="documentSection" class="bg-white rounded-2xl shadow-md p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-6">ការគ្រប់គ្រងឯកសារសម្រាប់និស្សិត</h2>
+            
+            <!-- Document Editor -->
+            <div class="mb-6">
+                <label for="documentTitle" class="block text-sm font-medium text-gray-700 mb-2">ចំណងជើងឯកសារ</label>
+                <input 
+                    type="text" 
+                    id="documentTitle" 
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                    placeholder="បញ្ចូលចំណងជើងឯកសារ"
+                >
+            </div>
+            
+            <div class="mb-4">
+                <label for="documentContent" class="block text-sm font-medium text-gray-700 mb-2">មាតិកាឯកសារ</label>
+                <textarea 
+                    id="documentContent" 
+                    rows="10"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                    placeholder="បញ្ចូលមាតិកាឯកសារនៅទីនេះ..."
+                ></textarea>
+            </div>
+            
+            <div class="flex justify-between items-center">
+                <div>
+                    <button onclick="saveDocument()" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition duration-200 mr-3">
+                        <i class="fas fa-save mr-2"></i>រក្សាទុកឯកសារ
+                    </button>
+                    <button onclick="clearDocument()" class="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition duration-200">
+                        <i class="fas fa-times mr-2"></i>លុបចេញ
+                    </button>
+                </div>
+                <div id="saveStatus" class="text-sm text-gray-600"></div>
+            </div>
+            
+            <!-- Saved Documents -->
+            <div class="mt-8">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">ឯកសារដែលបានរក្សាទុក</h3>
+                <div id="savedDocuments" class="space-y-3">
+                    <!-- Saved documents will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="totalStudentsModal" class="modal">
+        <div class="modal-content w-11/12 md:w-3/4 lg:w-2/3 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">និស្សិតសរុប</h3>
+                <button onclick="closeModal('totalStudentsModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ឈ្មោះអ្នកប្រើប្រាស់</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">អ៊ីមែល</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">តួនាទី</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ពេលវេលាចូលចុងក្រោយ</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ចំនួនដងចូល</th>
+                        </tr>
+                    </thead>
+                    <tbody id="totalStudentsTable" class="divide-y divide-gray-200">
+                        <!-- Total students data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="todayLoginsModal" class="modal">
+        <div class="modal-content w-11/12 md:w-3/4 lg:w-2/3 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">ការចូលថ្ងៃនេះ</h3>
+                <button onclick="closeModal('todayLoginsModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ឈ្មោះអ្នកប្រើប្រាស់</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">អ៊ីមែល</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">តួនាទី</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ពេលវេលាចូល</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ពេលវេលាចេញ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="todayLoginsTable" class="divide-y divide-gray-200">
+                        <!-- Today's login data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="activeDocumentsModal" class="modal">
+        <div class="modal-content w-11/12 md:w-3/4 lg:w-2/3 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">ឯកសារសកម្មតាមមុខវិជ្ជា</h3>
+                <button onclick="closeModal('activeDocumentsModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="subjectsContainer">
+                <!-- Subject cards will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <div id="subjectDetailModal" class="modal">
+        <div class="modal-content w-11/12 md:w-4/5 lg:w-3/4 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800" id="subjectDetailTitle">ព័ត៌មានលម្អិតមុខវិជ្ជា</h3>
+                <button onclick="closeModal('subjectDetailModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="subjectDetailContent">
+                <!-- Subject detail content will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <div id="studentProgressModal" class="modal">
+        <div class="modal-content w-11/12 md:w-4/5 lg:w-3/4 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800" id="studentProgressTitle">វឌ្ឍនភាពលម្អិតនិស្សិត</h3>
+                <button onclick="closeModal('studentProgressModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="studentProgressContent">
+                <!-- Student progress detail content will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <div id="reportsModal" class="modal">
+        <div class="modal-content w-11/12 md:w-4/5 lg:w-3/4 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">របាយការណ៍</h3>
+                <button onclick="closeModal('reportsModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-6">
+                <div class="bg-blue-50 p-4 rounded-lg report-card">
+                    <h4 class="text-lg font-semibold text-blue-800 mb-2">របាយការណ៍តាមមុខវិជ្ជា</h4>
+                    <p class="text-blue-700">មើលរបាយការណ៍លម្អិតអំពីការសិក្សារបស់និស្សិតតាមមុខវិជ្ជានីមួយៗ</p>
+                    <button onclick="showSubjectReports()" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200">
+                        <i class="fas fa-chart-line mr-2"></i>មើលរបាយការណ៍
+                    </button>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg report-card">
+                    <h4 class="text-lg font-semibold text-green-800 mb-2">របាយការណ៍វត្តមាន</h4>
+                    <p class="text-green-700">វិភាគអត្រាវត្តមានរបស់និស្សិតតាមខែ និងមុខវិជ្ជា</p>
+                    <button onclick="showAttendanceReports()" class="mt-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-200">
+                        <i class="fas fa-calendar-check mr-2"></i>មើលរបាយការណ៍
+                    </button>
+                </div>
+                <div class="bg-purple-50 p-4 rounded-lg report-card">
+                    <h4 class="text-lg font-semibold text-purple-800 mb-2">របាយការណ៍សមត្ថភាព</h4>
+                    <p class="text-purple-700">វាយតម្លៃសមត្ថភាពរបស់និស្សិតតាមមុខវិជ្ជានីមួយៗ</p>
+                    <button onclick="showPerformanceReports()" class="mt-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition duration-200">
+                        <i class="fas fa-chart-pie mr-2"></i>មើលរបាយការណ៍
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="subjectReportsModal" class="modal">
+        <div class="modal-content w-11/12 md:w-4/5 lg:w-3/4 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">របាយការណ៍តាមមុខវិជ្ជា</h3>
+                <button onclick="closeModal('subjectReportsModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="subjectReportsContainer">
+                <!-- Subject report cards will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <div id="attendanceReportsModal" class="modal">
+        <div class="modal-content w-11/12 md:w-4/5 lg:w-3/4 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">របាយការណ៍វត្តមាន</h3>
+                <button onclick="closeModal('attendanceReportsModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-6">
+                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">អត្រាវត្តមានតាមមុខវិជ្ជា</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="bg-gray-50">
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">មុខវិជ្ជា</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ចំនួនម៉ោងសរុប</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ម៉ោងវត្តមាន</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">អត្រាវត្តមាន</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ស្ថានភាព</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendanceTable" class="divide-y divide-gray-200">
+                                <!-- Attendance data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">វត្តមានតាមខែ</h4>
+                    <div class="h-64 flex items-end justify-between space-x-2" id="attendanceChart">
+                        <!-- Attendance chart will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="performanceReportsModal" class="modal">
+        <div class="modal-content w-11/12 md:w-4/5 lg:w-3/4 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">របាយការណ៍សមត្ថភាព</h3>
+                <button onclick="closeModal('performanceReportsModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-6">
+                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">សមត្ថភាពតាមមុខវិជ្ជា</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="bg-gray-50">
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">មុខវិជ្ជា</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ពិន្ទុមធ្យម</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ពិន្ទុខ្ពស់បំផុត</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">ពិន្ទុទាបបំផុត</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">អត្រាជាប់</th>
+                                </tr>
+                            </thead>
+                            <tbody id="performanceTable" class="divide-y divide-gray-200">
+                                <!-- Performance data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">កម្រិតសមត្ថភាពតាមមុខវិជ្ជា</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="performanceChart">
+                        <!-- Performance chart will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="settingsModal" class="modal">
+        <div class="modal-content w-11/12 md:w-3/4 lg:w-2/3 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">ការកំណត់ប្រព័ន្ធ</h3>
+                <button onclick="closeModal('settingsModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-6">
+                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-2">ការកំណត់អ្នកប្រើប្រាស់</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-700">អនុញ្ញាតឲ្យចុះឈ្មោះថ្មី</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-700">ផ្ញើការជូនដំណឹងតាមអ៊ីមែល</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-2">ការកំណត់សុវត្ថិភាព</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-700">ទាមទារពាក្យសម្ងាត់ខ្លាំង</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-700">កំណត់ពេលវេលាចេញស្វ័យប្រវត្តិ</span>
+                            <select class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option>15 នាទី</option>
+                                <option>30 នាទី</option>
+                                <option selected>1 ម៉ោង</option>
+                                <option>2 ម៉ោង</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-2">ការកំណត់ទិន្នន័យ</h4>
+                    <div class="space-y-3">
+                        <button class="w-full bg-blue-100 text-blue-700 p-3 rounded-lg hover:bg-blue-200 transition duration-200 text-left">
+                            <i class="fas fa-download mr-2"></i>ទាញយកទិន្នន័យទាំងអស់
+                        </button>
+                        <button class="w-full bg-green-100 text-green-700 p-3 rounded-lg hover:bg-green-200 transition duration-200 text-left">
+                            <i class="fas fa-file-export mr-2"></i>នាំចេញរបាយការណ៍
+                        </button>
+                        <button class="w-full bg-red-100 text-red-700 p-3 rounded-lg hover:bg-red-200 transition duration-200 text-left">
+                            <i class="fas fa-trash-alt mr-2"></i>សម្អាតទិន្នន័យចាស់
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced IT subjects data with detailed documentation
+        const subjects = [
+            { 
+                id: 1, 
+                name: "Web Development", 
+                description: "ជំនាញក្នុងការសរសេរ Website និង Web Application ដោយប្រើ HTML, CSS, JavaScript និង Framework ផ្សេងៗ",
+                documents: 5,
+                detail: `
+                    <h4 class="font-semibold text-lg mb-2">ព័ត៌មានទូទៅ</h4>
+                    <p class="mb-4">មុខវិជ្ជានេះផ្តោតលើការអភិវឌ្ឍគំនិតជាមូលដ្ឋាននៃការអភិវឌ្ឍគេហទំព័រ និងកម្មវិធីបណ្តាញ។</p>
+                    
+                    <h4 class="font-semibold text-lg mb-2">ឯកសារសិក្សា</h4>
+                    <div class="subject-doc">
+                        <h5 class="font-medium mb-2">HTML & CSS មូលដ្ឋាន</h5>
+                        <p>HTML (HyperText Markup Language) គឺជាភាសាសម្រាប់បង្កើតគេហទំព័រ។ វាប្រើស្លាក (tags) ដើម្បីកំណត់រចនាសម្ព័ន្ធ និងមាតិកានៃទំព័រ។ CSS (Cascading Style Sheets) គឺជាភាសាសម្រាប់កំណត់រចនាបទ និងទម្រង់នៃគេហទំព័រ។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">JavaScript មូលដ្ឋាន</h5>
+                        <p>JavaScript គឺជាភាសាសរសេរកម្មវិធីដែលអនុញ្ញាតឱ្យអ្នកបង្កើតមាតិកាដែលអាចធ្វើអន្តរកម្មបាននៅលើគេហទំព័រ។ វាជាផ្នែកមួយដ៏សំខាន់នៃការអភិវឌ្ឍគេហទំព័រ។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Frontend Frameworks</h5>
+                        <p>React, Angular, និង Vue.js គឺជា frameworks ដ៏ពេញនិយមសម្រាប់ការអភិវឌ្ឍផ្នែកខាងមុខនៃកម្មវិធីបណ្តាញ។ ពួកវាជួយសម្រួលដល់ការបង្កើតកម្មវិធីដែលមានភាពស្មុគស្មាញ និងអន្តរកម្ម។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Backend Development</h5>
+                        <p>Backend development ពាក់ព័ន្ធនឹងការបង្កើត server, application, និង database ដែលដំណើរការនៅពីក្រោយឆាក។ Node.js, Python (Django, Flask), PHP, និង Ruby on Rails គឺជាបច្ចេកវិទ្យាដ៏ពេញនិយមសម្រាប់ការអភិវឌ្ឍ backend។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Database Management</h5>
+                        <p>ការគ្រប់គ្រងទិន្នន័យគឺជាផ្នែកសំខាន់នៃការអភិវឌ្ឍគេហទំព័រ។ MySQL, PostgreSQL, MongoDB, និង SQLite គឺជាប្រព័ន្ធគ្រប់គ្រងមូលដ្ឋានទិន្នន័យដ៏ពេញនិយម។</p>
+                    </div>
+                `
+            },
+            { 
+                id: 2, 
+                name: "Mobile App Development", 
+                description: "ការអភិវឌ្ឍកម្មវិធីសម្រាប់ទូរស័ព្ទ Android និង iOS ដោយប្រើ Flutter, React Native ឬ Native Development",
+                documents: 4,
+                detail: `
+                    <h4 class="font-semibold text-lg mb-2">ព័ត៌មានទូទៅ</h4>
+                    <p class="mb-4">មុខវិជ្ជានេះផ្តោតលើការអភិវឌ្ឍកម្មវិធីសម្រាប់ឧបករណ៍ចល័ត។</p>
+                    
+                    <h4 class="font-semibold text-lg mb-2">ឯកសារសិក្សា</h4>
+                    <div class="subject-doc">
+                        <h5 class="font-medium mb-2">Native vs Cross-Platform Development</h5>
+                        <p>ការអភិវឌ្ឍកម្មវិធី Native សំដៅលើការបង្កើតកម្មវិធីសម្រាប់ប្រព័ន្ធប្រតិបត្តិការជាក់លាក់មួយ (Android ឬ iOS) ដោយប្រើភាសា និង tools ដែលបានបង្កើតឡើងជាពិសេសសម្រាប់ប្រព័ន្ធប្រតិបត្តិការនោះ។ ការអភិវឌ្ឍ Cross-platform អនុញ្ញាតឱ្យអ្នកសរសេរ code តែមួយ ហើយ run លើ platform ច្រើន។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Flutter Development</h5>
+                        <p>Flutter គឺជា UI toolkit ដែលបង្កើតឡើងដោយ Google សម្រាប់ការបង្កើតកម្មវិធីដែលស្អាត រហ័ស ដែល compile ទៅជា native code សម្រាប់ mobile, web, និង desktop ពី codebase តែមួយ។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">React Native</h5>
+                        <p>React Native គឺជា framework ដែលបង្កើតឡើងដោយ Facebook សម្រាប់ការបង្កើតកម្មវិធី mobile ដោយប្រើ JavaScript និង React។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">iOS Development with Swift</h5>
+                        <p>Swift គឺជាភាសាសរសេរកម្មវិធីដែលបង្កើតឡើងដោយ Apple សម្រាប់ការអភិវឌ្ឍកម្មវិធីសម្រាប់ iOS, macOS, watchOS, និង tvOS។</p>
+                    </div>
+                `
+            },
+            { 
+                id: 3, 
+                name: "Database Management", 
+                description: "ការរៀនគ្រប់គ្រងមូលដ្ឋានទិន្នន័យ SQL និង NoSQL ដូចជា MySQL, MongoDB, PostgreSQL",
+                documents: 6,
+                detail: `
+                    <h4 class="font-semibold text-lg mb-2">ព័ត៌មានទូទៅ</h4>
+                    <p class="mb-4">មុខវិជ្ជានេះផ្តោតលើគោលគំនិត និងការអនុវត្តនៃការគ្រប់គ្រងមូលដ្ឋានទិន្នន័យ។</p>
+                    
+                    <h4 class="font-semibold text-lg mb-2">ឯកសារសិក្សា</h4>
+                    <div class="subject-doc">
+                        <h5 class="font-medium mb-2">SQL Databases</h5>
+                        <p>មូលដ្ឋានទិន្នន័យ SQL (Structured Query Language) រក្សាទិន្នន័យក្នុងតារាងដែលមានរចនាសម្ព័ន្ធ។ ពួកវាប្រើ schema ដែលកំណត់រចនាសម្ព័ន្ធ និងទំនាក់ទំនងរវាងទិន្នន័យ។ MySQL, PostgreSQL, SQL Server, និង Oracle គឺជាឧទាហរណ៍នៃមូលដ្ឋានទិន្នន័យ SQL។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">NoSQL Databases</h5>
+                        <p>មូលដ្ឋានទិន្នន័យ NoSQL គឺមិនមែនជាតារាង ឬអាចមាន schema ដែលមិនតឹងរ៉ឹង។ ពួកវាសមរម្យសម្រាប់ទិន្នន័យដែលមិនសមរម្យសម្រាប់គំរូតារាង ឬនៅពេលដែលតម្រូវការទិន្នន័យផ្លាស់ប្តូរញឹកញាប់។ MongoDB, Cassandra, Redis, និង Couchbase គឺជាឧទាហរណ៍នៃមូលដ្ឋានទិន្នន័យ NoSQL។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Database Design</h5>
+                        <p>ការរចនាមូលដ្ឋានទិន្នន័យដែលល្អគឺជាការសំខាន់សម្រាប់សមត្ថភាព និងភាពជាក់លាក់នៃកម្មវិធី។ វាពាក់ព័ន្ធនឹងការកំណត់តារាង ទំនាក់ទំនង និងការរឹតបន្តឹង។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Normalization</h5>
+                        <p>Normalization គឺជាដំណើរការនៃការរៀបចំទិន្នន័យក្នុងមូលដ្ឋានទិន្នន័យ។ នេះរួមបញ្ចូលទាំងការបង្កើតតារាង និងការបង្កើតទំនាក់ទំនងរវាងតារាងទាំងនោះតាមវិធានដែលបានកំណត់ដែលការពារ និងធ្វើឱ្យទិន្នន័យមានប្រសិទ្ធភាព និងកាត់បន្ថយការស្ទួយទិន្នន័យ។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Indexing and Performance</h5>
+                        <p>Indexes គឺជារចនាសម្ព័ន្ធទិន្នន័យពិសេសដែលធ្វើឱ្យល្បឿននៃការទាញយកទិន្នន័យក្នុងតារាងមូលដ្ឋានទិន្នន័យកាន់តែលឿន។ ការយល់ដឹងអំពីរបៀបដែល indexes ដំណើរការ និងពេលវេលាដែលត្រូវប្រើពួកវាគឺជារឿងសំខាន់សម្រាប់សមត្ថភាពមូលដ្ឋានទិន្នន័យ។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Transactions and ACID Properties</h5>
+                        <p>Transaction គឺជាឯកតានៃការងារដែលដំណើរការប្តូរទិន្នន័យ។ ACID (Atomicity, Consistency, Isolation, Durability) គឺជាលក្ខណៈសម្បត្តិដែលធានាថា transaction មូលដ្ឋានទិន្នន័យដំណើរការដោយគុណភាពដែលអាចទុកចិត្តបាន។</p>
+                    </div>
+                `
+            },
+            { 
+                id: 4, 
+                name: "Artificial Intelligence", 
+                description: "សិក្សាអំពី Machine Learning, Deep Learning, Neural Networks និងការអនុវត្ត AI",
+                documents: 7,
+                detail: `
+                    <h4 class="font-semibold text-lg mb-2">ព័ត៌មានទូទៅ</h4>
+                    <p class="mb-4">មុខវិជ្ជានេះណែនាំអំពីគោលគំនិត និងការអនុវត្តនៃបច្ចេកវិទ្យា AI ទាន់សម័យ។</p>
+                    
+                    <h4 class="font-semibold text-lg mb-2">ឯកសារសិក្សា</h4>
+                    <div class="subject-doc">
+                        <h5 class="font-medium mb-2">Introduction to AI</h5>
+                        <p>Artificial Intelligence (AI) គឺជាសាខានៃវិទ្យាសាស្ត្រកុំព្យូទ័រដែលពាក់ព័ន្ធនឹងការបង្កើតម៉ាស៊ីនដែលអាចអនុវត្តកិច្ចការដែលត្រូវការសមត្ថភាពផ្លូវចិត្តរបស់មនុស្ស។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Machine Learning</h5>
+                        <p>Machine Learning (ML) គឺជាផ្នែកមួយនៃ AI ដែលផ្តោតលើការអភិវឌ្ឍ algorithms ដែលអនុញ្ញាតឱ្យកុំព្យូទ័ររៀនពីទិន្នន័យ។ ML algorithms បង្កើតគំរូគណិតវិទ្យាដោយប្រើទិន្នន័យគំរូដើម្បីធ្វើការទស្សន៍ទាយ ឬការសម្រេចចិត្តដោយមិនត្រូវបានកំណត់យ៉ាងច្បាស់លាស់ឱ្យធ្វើកិច្ចការនោះ។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Deep Learning</h5>
+                        <p>Deep Learning គឺជាផ្នែកមួយនៃ Machine Learning ដែលប្រើ neural networks ដែលមានច្រើនជាន់។ វាបានបង្កើតបដិវត្តន៍ក្នុងការទស្សន៍ទាយការទទួលស្គាល់រូបភាព ការដំណើរការភាសាធម្មជាតិ និងការទស្សន៍ទាយ។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Neural Networks</h5>
+                        <p>Neural Networks គឺជាគំរូគណិតវិទ្យាដែលចម្លងការងាររបស់ខួរក្បាលមនុស្ស។ ពួកវាមាន nodes (neurons) ដែលភ្ជាប់គ្នាដែលដំណើរការព័ត៌មានដោយឆ្លងកាត់សញ្ញា។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Natural Language Processing (NLP)</h5>
+                        <p>Natural Language Processing (NLP) គឺជាផ្នែកមួយនៃ AI ដែលផ្តោតលើការធ្វើឱ្យកុំព្យូទ័រយល់ បកស្រាយ និងធ្វើអន្តរកម្មជាមួយភាសាមនុស្ស។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Computer Vision</h5>
+                        <p>Computer Vision គឺជាវិសាលភាពនៃ AI ដែលអនុញ្ញាតឱ្យម៉ាស៊ីនដើម្បីមើលឃើញ ដើម្បីយល់ និងដើម្បីបកស្រាយពិភពលោកដែលមើលឃើញ។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">AI Ethics</h5>
+                        <p>AI Ethics ពាក់ព័ន្ធនឹងការសិក្សាអំពីបញ្ហាសីលធម៌ដែលទាក់ទងនឹងការអភិវឌ្ឍ និងការប្រើប្រាស់បច្ចេកវិទ្យា AI។ នេះរួមបញ្ចូលទាំងភាពលំអៀង ឯកជនភាព ភាពត្រឹមត្រូវ និងផលប៉ះពាល់សង្គម។</p>
+                    </div>
+                `
+            },
+            { 
+                id: 5, 
+                name: "Cybersecurity", 
+                description: "ការសិក្សាអំពីសុវត្ថិភាពព័ត៌មាន ការការពើហាយគ្រោះថ្នាក់ និងការការពារប្រព័ន្ធ",
+                documents: 5,
+                detail: `
+                    <h4 class="font-semibold text-lg mb-2">ព័ត៌មានទូទៅ</h4>
+                    <p class="mb-4">មុខវិជ្ជានេះផ្តោតលើការការពារប្រព័ន្ធ បណ្តាញ និងទិន្នន័យពីការចូលប្រើប្រាស់ ការបំផ្លិចបំផ្លាញ ឬការលួច។</p>
+                    
+                    <h4 class="font-semibold text-lg mb-2">ឯកសារសិក្សា</h4>
+                    <div class="subject-doc">
+                        <h5 class="font-medium mb-2">Network Security</h5>
+                        <p>Network Security ពាក់ព័ន្ធនឹងការអនុវត្តន៍នៃវិធានការ និងគោលនយោបាយដើម្បីការពារបណ្តាញកុំព្យូទ័រ និងទិន្នន័យពីការចូលប្រើប្រាស់ ឬការវាយប្រហារដែលមិនសមស្រប។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Cryptography</h5>
+                        <p>Cryptography គឺជាវិទ្យាសាស្ត្រនៃការការពារព័ត៌មានដោយបំលែងវាទៅជាទម្រង់ដែលមិនអាចអានបាន។ វារួមបញ្ចូលទាំងការអ៊ិនគ្រីប និងការឌិគ្រីបទិន្នន័យ។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Ethical Hacking</h5>
+                        <p>Ethical Hacking ពាក់ព័ន្ធនឹងការវាយប្រហារប្រព័ន្ធដោយមានការអនុញ្ញាតដើម្បីស្វែងរកភាពទន់ខ្សោយ ដែលអាចត្រូវបានកែលម្អ។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Security Policies and Procedures</h5>
+                        <p>ការអភិវឌ្ឍ និងការអនុវត្តគោលនយោបាយសុវត្ថិភាព និងនីតិវិធីគឺជាផ្នែកសំខាន់នៃសុវត្ថិភាពព័ត៌មាន។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Incident Response</h5>
+                        <p>Incident Response គឺជាដំណើរការនៃការរៀបចំ និងការដោះស្រាយនូវការបំពានសុវត្ថិភាព ឬការវាយប្រហារ។</p>
+                    </div>
+                `
+            },
+            { 
+                id: 6, 
+                name: "Cloud Computing", 
+                description: "សិក្សាអំពីសេវាកម្មពពក AWS, Azure, Google Cloud និងការគ្រប់គ្រង Infrastructure",
+                documents: 4,
+                detail: `
+                    <h4 class="font-semibold text-lg mb-2">ព័ត៌មានទូទៅ</h4>
+                    <p class="mb-4">មុខវិជ្ជានេះផ្តោតលើការផ្តល់សេវាកម្មកុំព្យូទ័រតាមអ៊ីនធឺណិត រួមទាំង servers, storage, databases, networking, software។</p>
+                    
+                    <h4 class="font-semibold text-lg mb-2">ឯកសារសិក្សា</h4>
+                    <div class="subject-doc">
+                        <h5 class="font-medium mb-2">Cloud Service Models</h5>
+                        <p>មានគំរូសេវាកម្មពពកសំខាន់ៗបីគឺ៖ Infrastructure as a Service (IaaS), Platform as a Service (PaaS), និង Software as a Service (SaaS)។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">AWS (Amazon Web Services)</h5>
+                        <p>AWS គឺជាការផ្តល់សេវាកម្មពពកដ៏ពេញនិយម និងទូលំទូលាយបំផុតដែលផ្តល់នូវសេវាកម្មផ្សេងៗគ្នាជាច្រើនដូចជា computing power, storage options, networking, និង databases។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Microsoft Azure</h5>
+                        <p>Azure គឺជាវេទិកាពពករបស់ Microsoft ដែលផ្តល់នូវសេវាកម្មផ្សេងៗគ្នាជាច្រើន រួមទាំងសេវាកម្មសម្រាប់ computing, analytics, storage, និង networking។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Google Cloud Platform</h5>
+                        <p>Google Cloud Platform (GCP) គឺជាសេវាកម្មពពកដែលផ្តល់ដោយ Google ដែលដំណើរការលើ infrastructure ដូចគ្នាដែល Google ប្រើសម្រាប់ផលិតផលចុងក្រោយរបស់ខ្លួនដូចជា Search, Gmail, Google Drive, និង YouTube។</p>
+                    </div>
+                `
+            },
+            { 
+                id: 7, 
+                name: "Software Engineering", 
+                description: "គោលការណ៍វិស្វកម្មកម្មវិធី ដំណើរការអភិវឌ្ឍន៍ និងការគ្រប់គ្រងគម្រោង",
+                documents: 6,
+                detail: `
+                    <h4 class="font-semibold text-lg mb-2">ព័ត៌មានទូទៅ</h4>
+                    <p class="mb-4">មុខវិជ្ជានេះផ្តោតលើការអនុវត្តវិធីសាស្ត្រវិស្វកម្មសម្រាប់ការរចនា ការអភិវឌ្ឍ និងការថែទាំកម្មវិធី។</p>
+                    
+                    <h4 class="font-semibold text-lg mb-2">ឯកសារសិក្សា</h4>
+                    <div class="subject-doc">
+                        <h5 class="font-medium mb-2">Software Development Life Cycle (SDLC)</h5>
+                        <p>SDLC គឺជាដំណើរការដែលប្រើសម្រាប់ការរចនា ការអភិវឌ្ឍ និងការធ្វើតេស្តកម្មវិធី។ វារួមបញ្ចូលទាំងដំណាក់កាលជាច្រើនដូចជា៖ ការប្រមូលតម្រូវការ ការរចនា ការអភិវឌ្ឍ ការធ្វើតេស្ត ការដាក់ឱ្យប្រើ និងការថែទាំ។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Agile Methodology</h5>
+                        <p>Agile គឺជាវិធីសាស្ត្រអភិវឌ្ឍន៍កម្មវិធីដែលផ្តោតលើការផ្តល់តម្លៃដល់អតិថិជនតាមរយៈការផ្តល់កម្មវិធីដែលដំណើរការបានក្នុងរយៈពេលខ្លី។ Scrum និង Kanban គឺជាវិធីសាស្ត្រ Agile ដ៏ពេញនិយម។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Software Design Patterns</h5>
+                        <p>Design Patterns គឺជាដំណោះស្រាយដែលអាចប្រើឡើងវិញចំពោះបញ្ហាទូទៅក្នុងការរចនាកម្មវិធី។ ពួកវាជួយឱ្យអ្នកអភិវឌ្ឍន៍សរសេរ code ដែលអាចយល់បាន និងអាចរក្សាទុកបាន។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Testing and Quality Assurance</h5>
+                        <p>Testing គឺជាដំណើរការនៃការវាយតម្លៃកម្មវិធីដើម្បីរកកំហុស និងធានាថាវាបំពេញតាមតម្រូវការ។ Quality Assurance (QA) ពាក់ព័ន្ធនឹងការត្រួតពិនិត្យដំណើរការអភិវឌ្ឍន៍កម្មវិធីដើម្បីធានាថាផលិតផលមានគុណភាព។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Version Control with Git</h5>
+                        <p>Git គឺជាប្រព័ន្ធគ្រប់គ្រងកំណែដែលអនុញ្ញាតឱ្យអ្នកអភិវឌ្ឍន៍តាមដានការផ្លាស់ប្តូរក្នុង files code និងសហការជាមួយអ្នកដទៃ។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Project Management</h5>
+                        <p>ការគ្រប់គ្រងគម្រោងកម្មវិធីពាក់ព័ន្ធនឹងការរៀបចំ ការគ្រប់គ្រង និងការតាមដានដំណើរការអភិវឌ្ឍន៍កម្មវិធី។</p>
+                    </div>
+                `
+            },
+            { 
+                id: 8, 
+                name: "Data Science", 
+                description: "ការវិភាគទិន្នន័យ ស្ថិតិ Machine Learning និងការធ្វើអន្តរកម្មទិន្នន័យ",
+                documents: 5,
+                detail: `
+                    <h4 class="font-semibold text-lg mb-2">ព័ត៌មានទូទៅ</h4>
+                    <p class="mb-4">មុខវិជ្ជានេះផ្តោតលើការទាញយកចំណេះដឹង និងការយល់ដឹងពីទិន្នន័យដោយប្រើវិធីសាស្ត្រ ដំណើរការ ក្បួនដោះស្រាយ និងប្រព័ន្ធវិទ្យាសាស្ត្រ។</p>
+                    
+                    <h4 class="font-semibold text-lg mb-2">ឯកសារសិក្សា</h4>
+                    <div class="subject-doc">
+                        <h5 class="font-medium mb-2">Data Analysis</h5>
+                        <p>Data Analysis ពាក់ព័ន្ធនឹងការត្រួតពិនិត្យ សម្អាត បំលែង និងគំរូទិន្នន័យដើម្បីរកព័ត៌មានមានប្រយោជន៍ សន្និដ្ឋាន និងជំនួយក្នុងការសម្រេចចិត្ត។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Statistics for Data Science</h5>
+                        <p>ស្ថិតិផ្តល់នូវមូលដ្ឋានគ្រឹះសម្រាប់ Data Science។ វារួមបញ្ចូលទាំងគោលគំនិតដូចជា probability, hypothesis testing, regression analysis, និង statistical inference។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Data Visualization</h5>
+                        <p>Data Visualization ពាក់ព័ន្ធនឹងការបង្កើតការតំណាងក្រាហ្វិកនៃទិន្នន័យ។ វិធីសាស្ត្រដូចជា charts, graphs, និង maps ជួយឱ្យមនុស្សយល់ពីសារៈសំខាន់នៃទិន្នន័យ។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Machine Learning for Data Science</h5>
+                        <p>Machine Learning algorithms ត្រូវបានប្រើយ៉ាងទូលំទូលាយក្នុង Data Science សម្រាប់ការទស្សន៍ទាយ និងការស្វែងរកគំរូក្នុងទិន្នន័យ។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Big Data Technologies</h5>
+                        <p>Big Data Technologies ដូចជា Hadoop, Spark, និង NoSQL databases ត្រូវបានប្រើដើម្បីដោះស្រាយទិន្នន័យដែលមានទំហំធំ ល្បឿនខ្ពស់ និងភាពចម្រុះ។</p>
+                    </div>
+                `
+            },
+            { 
+                id: 9, 
+                name: "Networking", 
+                description: "សិក្សាអំពីបណ្តាញកុំព្យូទ័រ protocols, routing, switching និងសុវត្ថិភាពបណ្តាញ",
+                documents: 4,
+                detail: `
+                    <h4 class="font-semibold text-lg mb-2">ព័ត៌មានទូទៅ</h4>
+                    <p class="mb-4">មុខវិជ្ជានេះផ្តោតលើការរចនា ការសាងសង់ និងការគ្រប់គ្រងបណ្តាញកុំព្យូទ័រ។</p>
+                    
+                    <h4 class="font-semibold text-lg mb-2">ឯកសារសិក្សា</h4>
+                    <div class="subject-doc">
+                        <h5 class="font-medium mb-2">Network Protocols</h5>
+                        <p>Network Protocols គឺជាសំណុំនៃវិធានដែលកំណត់របៀបដែលទិន្នន័យត្រូវបានបញ្ជូន និងទទួលលើបណ្តាញ។ TCP/IP គឺជាសំណុំ protocols ដ៏សំខាន់បំផុតសម្រាប់អ៊ីនធឺណិត។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Routing and Switching</h5>
+                        <p>Routing គឺជាដំណើរការនៃការជ្រើសរើសផ្លូវលើបណ្តាញដែល packets នឹងធ្វើដំណើរ។ Switching ពាក់ព័ន្ធនឹងការបញ្ជូន packets ក្នុងបណ្តាញ local។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Network Security</h5>
+                        <p>Network Security ពាក់ព័ន្ធនឹងការការពារបណ្តាញកុំព្យូទ័រ និងទិន្នន័យពីការចូលប្រើប្រាស់ ឬការវាយប្រហារដែលមិនសមស្រប។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Wireless Networking</h5>
+                        <p>Wireless Networking ពាក់ព័ន្ធនឹងការភ្ជាប់ឧបករណ៍កុំព្យូទ័រដោយមិនប្រើ cables។ Wi-Fi គឺជាបច្ចេកវិទ្យាបណ្តាញឥតខ្សែដ៏ពេញនិយមបំផុត។</p>
+                    </div>
+                `
+            },
+            { 
+                id: 10, 
+                name: "UI/UX Design", 
+                description: "ការរចនាចំណុចប្រទាក់អ្នកប្រើប្រាស់ និងបទពិសោធន៍អ្នកប្រើប្រាស់សម្រាប់កម្មវិធី",
+                documents: 4,
+                detail: `
+                    <h4 class="font-semibold text-lg mb-2">ព័ត៌មានទូទៅ</h4>
+                    <p class="mb-4">មុខវិជ្ជានេះផ្តោតលើការរចនាចំណុចប្រទាក់ដែលងាយស្រួលប្រើ និងមានបទពិសោធន៍អ្នកប្រើប្រាស់ដ៏ល្អ។</p>
+                    
+                    <h4 class="font-semibold text-lg mb-2">ឯកសារសិក្សា</h4>
+                    <div class="subject-doc">
+                        <h5 class="font-medium mb-2">User Interface (UI) Design</h5>
+                        <p>UI Design ពាក់ព័ន្ធនឹងការរចនាចំណុចប្រទាក់ដែលអ្នកប្រើប្រាស់អន្តរកម្មជាមួយ។ នេះរួមបញ្ចូលទាំង buttons, icons, spacing, typography, color schemes, និង responsive design។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">User Experience (UX) Design</h5>
+                        <p>UX Design ពាក់ព័ន្ធនឹងការរចនាបទពិសោធន៍ទាំងមូលដែលអ្នកប្រើប្រាស់មានជាមួយកម្មវិធី។ វាផ្តោតលើការធ្វើឱ្យកម្មវិធីងាយស្រួលប្រើ មានប្រសិទ្ធភាព និងរីករាយក្នុងការប្រើប្រាស់។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Design Tools</h5>
+                        <p>មាន tools ជាច្រើនសម្រាប់ UI/UX design ដូចជា Figma, Adobe XD, Sketch, និង InVision។ Tools ទាំងនេះជួយអ្នករចនាបង្កើត prototypes និង mockups។</p>
+                        
+                        <h5 class="font-medium mt-4 mb-2">Usability Testing</h5>
+                        <p>Usability Testing ពាក់ព័ន្ធនឹងការធ្វើតេស្តកម្មវិធីជាមួយអ្នកប្រើប្រាស់ពិតៗដើម្បីស្វែងរកបញ្ហា និងការកែលម្អដែលអាចធ្វើបានក្នុងការរចនា។</p>
+                    </div>
+                `
+            }
+        ];
+
+        // Sample data for demonstration
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            
+            if (!currentUser || currentUser.role !== 'admin') {
+                window.location.href = 'login';
+                return;
+            }
+
+            // Display current admin info
+            document.getElementById('welcomeMessage').textContent = `សូមស្វាគមន៍, ${currentUser.username}!`;
+            document.getElementById('loginInfo').textContent = `អ្នកបានចូលជាអ្នកគ្រប់គ្រងនៅពេល ${currentUser.loginTime}`;
+            
+            document.getElementById('currentUsername').textContent = currentUser.username;
+            document.getElementById('currentEmail').textContent = currentUser.email;
+            document.getElementById('currentLoginTime').textContent = currentUser.loginTime;
+            document.getElementById('currentDate').textContent = currentUser.date;
+
+            // Display in navigation
+            document.getElementById('currentUserInfo').textContent = `${currentUser.username} (អ្នកគ្រប់គ្រង)`;
+
+            // Load initial data
+            loadStudentData();
+            loadStatistics();
+            loadSavedDocuments();
+            loadStudentProgress();
+            populateSubjectFilter();
+            
+            // Add search functionality
+            document.getElementById('studentSearch').addEventListener('input', function() {
+                filterStudents(this.value);
+            });
+            
+            document.getElementById('progressSearch').addEventListener('input', function() {
+                filterProgress(this.value);
+            });
+            
+            document.getElementById('subjectFilter').addEventListener('change', function() {
+                filterProgressBySubject(this.value);
+            });
+        });
+
+        // NEW FUNCTION: Get unique students by username
+        function getUniqueStudents(loginHistory) {
+            const uniqueStudents = {};
+            
+            loginHistory.forEach(user => {
+                if (user.role === 'student') {
+                    if (!uniqueStudents[user.username]) {
+                        uniqueStudents[user.username] = {
+                            username: user.username,
+                            email: user.email,
+                            role: user.role,
+                            loginCount: 1,
+                            lastLoginTime: user.loginTime,
+                            lastLogoutTime: user.logoutTime
+                        };
+                    } else {
+                        // Update login count and last login time
+                        uniqueStudents[user.username].loginCount++;
+                        if (new Date(user.loginTime) > new Date(uniqueStudents[user.username].lastLoginTime)) {
+                            uniqueStudents[user.username].lastLoginTime = user.loginTime;
+                            uniqueStudents[user.username].lastLogoutTime = user.logoutTime;
+                        }
+                    }
+                }
+            });
+            
+            return Object.values(uniqueStudents);
+        }
+
+        // NEW FUNCTION: Load student progress data
+        function loadStudentProgress() {
+            const studentProgress = JSON.parse(localStorage.getItem('studentProgress')) || [];
+            const progressTable = document.getElementById('progressTable');
+            const noProgressMessage = document.getElementById('noProgressMessage');
+            
+            progressTable.innerHTML = '';
+            
+            if (studentProgress.length === 0) {
+                noProgressMessage.classList.remove('hidden');
+                return;
+            }
+            
+            noProgressMessage.classList.add('hidden');
+            
+            studentProgress.forEach((progress, index) => {
+                const subject = subjects.find(s => s.id === progress.subjectId);
+                const progressPercentage = Math.min(100, Math.max(0, progress.progress));
+                const score = progress.score || 0;
+                const status = progress.status || 'កំពុងសិក្សា';
+                const statusColor = getStatusColor(status);
+                
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-4 py-3 text-sm text-gray-900">${progress.studentName}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${subject ? subject.name : 'មិនស្គាល់'}</td>
+                    <td class="px-4 py-3 text-sm">
+                        <div class="flex items-center">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5 mr-2">
+                                <div class="bg-blue-600 h-2.5 rounded-full" style="width: ${progressPercentage}%"></div>
+                            </div>
+                            <span class="text-xs text-gray-600">${progressPercentage}%</span>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${score}%</td>
+                    <td class="px-4 py-3 text-sm">
+                        <span class="px-2 py-1 rounded-full ${statusColor}">
+                            ${status}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-sm">
+                        <button onclick="viewStudentProgressDetails(${index})" class="text-blue-600 hover:text-blue-800 mr-3">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button onclick="updateStudentProgress(${index})" class="text-green-600 hover:text-green-800">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </td>
+                `;
+                progressTable.appendChild(row);
+            });
+        }
+
+        // NEW FUNCTION: Get status color based on status
+        function getStatusColor(status) {
+            switch(status) {
+                case 'បញ្ចប់':
+                    return 'bg-green-100 text-green-800';
+                case 'កំពុងសិក្សា':
+                    return 'bg-blue-100 text-blue-800';
+                case 'មិនទាន់ចាប់ផ្តើម':
+                    return 'bg-gray-100 text-gray-800';
+                case 'ពន្យារពេល':
+                    return 'bg-yellow-100 text-yellow-800';
+                case 'បានបោះបង់':
+                    return 'bg-red-100 text-red-800';
+                default:
+                    return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        // NEW FUNCTION: Populate subject filter dropdown
+        function populateSubjectFilter() {
+            const subjectFilter = document.getElementById('subjectFilter');
+            subjectFilter.innerHTML = '<option value="all">មុខវិជ្ជាទាំងអស់</option>';
+            
+            subjects.forEach(subject => {
+                const option = document.createElement('option');
+                option.value = subject.id;
+                option.textContent = subject.name;
+                subjectFilter.appendChild(option);
+            });
+        }
+
+        // NEW FUNCTION: Filter progress by subject
+        function filterProgressBySubject(subjectId) {
+            const rows = document.querySelectorAll('#progressTable tr');
+            rows.forEach(row => {
+                const subjectCell = row.cells[1];
+                if (subjectCell) {
+                    const subjectName = subjectCell.textContent;
+                    const subject = subjects.find(s => s.id === parseInt(subjectId));
+                    
+                    if (subjectId === 'all' || (subject && subjectName === subject.name)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // NEW FUNCTION: Filter progress by search term
+        function filterProgress(searchTerm) {
+            const rows = document.querySelectorAll('#progressTable tr');
+            rows.forEach(row => {
+                const studentName = row.cells[0].textContent.toLowerCase();
+                const search = searchTerm.toLowerCase();
+                
+                if (studentName.includes(search)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // NEW FUNCTION: View student progress details
+        function viewStudentProgressDetails(index) {
+            const studentProgress = JSON.parse(localStorage.getItem('studentProgress')) || [];
+            const progress = studentProgress[index];
+            const subject = subjects.find(s => s.id === progress.subjectId);
+            
+            document.getElementById('studentProgressTitle').textContent = `វឌ្ឍនភាពលម្អិត: ${progress.studentName}`;
+            
+            let content = `
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-700">ឈ្មោះនិស្សិត</h4>
+                            <p>${progress.studentName}</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-700">មុខវិជ្ជា</h4>
+                            <p>${subject ? subject.name : 'មិនស្គាល់'}</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-700">ភាពរីកចម្រើន</h4>
+                            <div class="flex items-center mt-1">
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 mr-2">
+                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: ${progress.progress}%"></div>
+                                </div>
+                                <span class="text-sm text-gray-600">${progress.progress}%</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-700">ពិន្ទុ</h4>
+                            <p>${progress.score || 0}%</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-700">ស្ថានភាព</h4>
+                            <span class="px-2 py-1 rounded-full ${getStatusColor(progress.status || 'កំពុងសិក្សា')}">
+                                ${progress.status || 'កំពុងសិក្សា'}
+                            </span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-700">កាលបរិច្ឆេទចុងក្រោយ</h4>
+                            <p>${progress.lastUpdated || 'មិនទាន់មាន'}</p>
+                        </div>
+                    </div>
+            `;
+            
+            if (progress.notes) {
+                content += `
+                    <div>
+                        <h4 class="font-semibold text-gray-700">កំណត់សម្គាល់</h4>
+                        <p class="mt-1 p-3 bg-gray-50 rounded-lg">${progress.notes}</p>
+                    </div>
+                `;
+            }
+            
+            content += `</div>`;
+            
+            document.getElementById('studentProgressContent').innerHTML = content;
+            openModal('studentProgressModal');
+        }
+
+        // NEW FUNCTION: Update student progress
+        function updateStudentProgress(index) {
+            const studentProgress = JSON.parse(localStorage.getItem('studentProgress')) || [];
+            const progress = studentProgress[index];
+            
+            const newProgress = prompt('បញ្ចូលភាពរីកចម្រើនថ្មី (0-100):', progress.progress);
+            if (newProgress !== null) {
+                const progressValue = parseInt(newProgress);
+                if (!isNaN(progressValue) && progressValue >= 0 && progressValue <= 100) {
+                    progress.progress = progressValue;
+                    
+                    // Update status based on progress
+                    if (progressValue === 100) {
+                        progress.status = 'បញ្ចប់';
+                    } else if (progressValue > 0) {
+                        progress.status = 'កំពុងសិក្សា';
+                    } else {
+                        progress.status = 'មិនទាន់ចាប់ផ្តើម';
+                    }
+                    
+                    progress.lastUpdated = new Date().toLocaleString('km-KH');
+                    
+                    localStorage.setItem('studentProgress', JSON.stringify(studentProgress));
+                    loadStudentProgress();
+                    alert('វឌ្ឍនភាពត្រូវបានធ្វើបច្ចុប្បន្នភាពដោយជោគជ័យ!');
+                } else {
+                    alert('សូមបញ្ចូលតម្លៃពី 0 ដល់ 100');
+                }
+            }
+        }
+
+        // NEW FUNCTION: Show student progress section
+        function showStudentProgress() {
+            switchTab('progress');
+        }
+
+        // NEW FUNCTION: Switch between tabs
+        function switchTab(tab) {
+            // Update tab buttons
+            document.getElementById('studentTab').classList.remove('active');
+            document.getElementById('progressTab').classList.remove('active');
+            
+            // Hide all sections
+            document.getElementById('studentSection').classList.add('hidden');
+            document.getElementById('progressSection').classList.add('hidden');
+            
+            // Show selected section and activate tab
+            if (tab === 'student') {
+                document.getElementById('studentTab').classList.add('active');
+                document.getElementById('studentSection').classList.remove('hidden');
+            } else if (tab === 'progress') {
+                document.getElementById('progressTab').classList.add('active');
+                document.getElementById('progressSection').classList.remove('hidden');
+            }
+        }
+
+        // Rest of the existing functions remain the same...
+        function loadStudentData() {
+            const loginHistory = JSON.parse(localStorage.getItem('loginHistory')) || [];
+            const studentTable = document.getElementById('studentTable');
+            const noStudentsMessage = document.getElementById('noStudentsMessage');
+            
+            // Get unique students
+            const uniqueStudents = getUniqueStudents(loginHistory);
+            
+            studentTable.innerHTML = '';
+            
+            if (uniqueStudents.length === 0) {
+                noStudentsMessage.classList.remove('hidden');
+                return;
+            }
+            
+            noStudentsMessage.classList.add('hidden');
+            
+            uniqueStudents.forEach((student, index) => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-4 py-3 text-sm text-gray-900">${student.username}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${student.email}</td>
+                    <td class="px-4 py-3 text-sm">
+                        <span class="px-2 py-1 rounded-full bg-green-100 text-green-800">
+                            និស្សិត
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${student.lastLoginTime}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${student.loginCount}</td>
+                    <td class="px-4 py-3 text-sm">
+                        <button onclick="viewStudentDetails('${student.username}')" class="text-blue-600 hover:text-blue-800 mr-3">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button onclick="sendMessage('${student.email}')" class="text-green-600 hover:text-green-800">
+                            <i class="fas fa-envelope"></i>
+                        </button>
+                    </td>
+                `;
+                studentTable.appendChild(row);
+            });
+        }
+
+        function filterStudents(searchTerm) {
+            const rows = document.querySelectorAll('#studentTable tr');
+            rows.forEach(row => {
+                const username = row.cells[0].textContent.toLowerCase();
+                const email = row.cells[1].textContent.toLowerCase();
+                const search = searchTerm.toLowerCase();
+                
+                if (username.includes(search) || email.includes(search)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function loadStatistics() {
+            const loginHistory = JSON.parse(localStorage.getItem('loginHistory')) || [];
+            const uniqueStudents = getUniqueStudents(loginHistory);
+            const today = new Date().toLocaleDateString('km-KH');
+            
+            // Count today's logins
+            const todayLogins = loginHistory.filter(user => 
+                user.date === today
+            ).length;
+            
+            // Count active documents
+            const documents = JSON.parse(localStorage.getItem('adminDocuments')) || [];
+            const activeDocuments = documents.length;
+            
+            document.getElementById('totalStudents').textContent = uniqueStudents.length;
+            document.getElementById('todayLogins').textContent = todayLogins;
+            document.getElementById('activeDocuments').textContent = activeDocuments;
+        }
+
+        function loadSavedDocuments() {
+            const documents = JSON.parse(localStorage.getItem('adminDocuments')) || [];
+            const savedDocumentsContainer = document.getElementById('savedDocuments');
+            
+            savedDocumentsContainer.innerHTML = '';
+            
+            if (documents.length === 0) {
+                savedDocumentsContainer.innerHTML = `
+                    <div class="text-center py-4 text-gray-500">
+                        <i class="fas fa-file text-2xl mb-2 text-gray-300"></i>
+                        <p>មិនទាន់មានឯកសារណាមួយនៅឡើយ</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            documents.forEach((doc, index) => {
+                const docElement = document.createElement('div');
+                docElement.className = 'border border-gray-200 rounded-lg p-4 hover:bg-gray-50';
+                docElement.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800">${doc.title}</h4>
+                            <p class="text-sm text-gray-600 mt-1">${doc.content.substring(0, 100)}${doc.content.length > 100 ? '...' : ''}</p>
+                            <p class="text-xs text-gray-500 mt-2">កែសម្រួលចុងក្រោយ: ${doc.lastUpdated}</p>
+                        </div>
+                        <div class="flex space-x-2 ml-4">
+                            <button onclick="editDocument(${index})" class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteDocument(${index})" class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                savedDocumentsContainer.appendChild(docElement);
+            });
+        }
+
+        function saveDocument() {
+            const title = document.getElementById('documentTitle').value;
+            const content = document.getElementById('documentContent').value;
+            
+            if (!title || !content) {
+                showSaveStatus('សូមបំពេញចំណងជើង និងមាតិកាឯកសារ', 'error');
+                return;
+            }
+            
+            const documents = JSON.parse(localStorage.getItem('adminDocuments')) || [];
+            const newDocument = {
+                title: title,
+                content: content,
+                lastUpdated: new Date().toLocaleString('km-KH'),
+                created: new Date().toLocaleString('km-KH')
+            };
+            
+            documents.unshift(newDocument);
+            localStorage.setItem('adminDocuments', JSON.stringify(documents));
+            
+            showSaveStatus('ឯកសារត្រូវបានរក្សាទុកដោយជោគជ័យ!', 'success');
+            clearDocument();
+            loadSavedDocuments();
+            loadStatistics();
+        }
+
+        function editDocument(index) {
+            const documents = JSON.parse(localStorage.getItem('adminDocuments')) || [];
+            const doc = documents[index];
+            
+            document.getElementById('documentTitle').value = doc.title;
+            document.getElementById('documentContent').value = doc.content;
+            
+            // Scroll to document section
+            document.getElementById('documentSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function deleteDocument(index) {
+            if (confirm('តើអ្នកពិតជាចង់លុបឯកសារនេះមែនទេ?')) {
+                const documents = JSON.parse(localStorage.getItem('adminDocuments')) || [];
+                documents.splice(index, 1);
+                localStorage.setItem('adminDocuments', JSON.stringify(documents));
+                loadSavedDocuments();
+                loadStatistics();
+            }
+        }
+
+        function clearDocument() {
+            document.getElementById('documentTitle').value = '';
+            document.getElementById('documentContent').value = '';
+            showSaveStatus('', '');
+        }
+
+        function showSaveStatus(message, type) {
+            const statusElement = document.getElementById('saveStatus');
+            statusElement.textContent = message;
+            
+            if (type === 'success') {
+                statusElement.className = 'text-sm text-green-600';
+            } else if (type === 'error') {
+                statusElement.className = 'text-sm text-red-600';
+            } else {
+                statusElement.className = 'text-sm text-gray-600';
+            }
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusElement.textContent = '';
+                }, 3000);
+            }
+        }
+
+        function showStudentSection() {
+            switchTab('student');
+        }
+
+        function showDocumentSection() {
+            document.getElementById('documentSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function refreshStudentData() {
+            loadStudentData();
+            loadStatistics();
+        }
+
+        function viewStudentDetails(username) {
+            const loginHistory = JSON.parse(localStorage.getItem('loginHistory')) || [];
+            const studentLogins = loginHistory.filter(user => user.username === username && user.role === 'student');
+            
+            if (studentLogins.length === 0) {
+                alert('មិនមានទិន្នន័យសម្រាប់និស្សិតនេះទេ');
+                return;
+            }
+            
+            let details = `ព័ត៌មានលម្អិតនិស្សិត:\n\nឈ្មោះ: ${username}\nអ៊ីមែល: ${studentLogins[0].email}\nចំនួនដងចូលសរុប: ${studentLogins.length}\n\nប្រវត្តិចូល:\n`;
+            
+            studentLogins.forEach((login, index) => {
+                details += `${index + 1}. ចូល: ${login.loginTime} | ចេញ: ${login.logoutTime || 'មិនទាន់ចេញ'}\n`;
+            });
+            
+            alert(details);
+        }
+
+        function sendMessage(email) {
+            const message = prompt('បញ្ចូលសារសម្រាប់និស្សិត:');
+            if (message) {
+                alert(`សារត្រូវបានផ្ញើទៅ ${email}:\n\n${message}`);
+            }
+        }
+
+        function logout() {
+            // Clear current user session
+            localStorage.removeItem('currentUser');
+            
+            // Redirect to login page
+            window.location.href = 'login';
+        }
+
+        // Enhanced functions for IT subjects and reports
+        function showTotalStudents() {
+            const loginHistory = JSON.parse(localStorage.getItem('loginHistory')) || [];
+            const uniqueStudents = getUniqueStudents(loginHistory);
+            const tableBody = document.getElementById('totalStudentsTable');
+            
+            tableBody.innerHTML = '';
+            
+            uniqueStudents.forEach(student => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-4 py-3 text-sm text-gray-900">${student.username}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${student.email}</td>
+                    <td class="px-4 py-3 text-sm">
+                        <span class="px-2 py-1 rounded-full bg-green-100 text-green-800">
+                            និស្សិត
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${student.lastLoginTime}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${student.loginCount}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            openModal('totalStudentsModal');
+        }
+
+        function showTodayLogins() {
+            const loginHistory = JSON.parse(localStorage.getItem('loginHistory')) || [];
+            const today = new Date().toLocaleDateString('km-KH');
+            const todayStudents = loginHistory.filter(user => user.date === today && user.role === 'student');
+            const tableBody = document.getElementById('todayLoginsTable');
+            
+            tableBody.innerHTML = '';
+            
+            todayStudents.forEach(student => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-4 py-3 text-sm text-gray-900">${student.username}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${student.email}</td>
+                    <td class="px-4 py-3 text-sm">
+                        <span class="px-2 py-1 rounded-full bg-green-100 text-green-800">
+                            និស្សិត
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${student.loginTime}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${student.logoutTime || 'មិនទាន់ចេញ'}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            openModal('todayLoginsModal');
+        }
+
+        function showActiveDocuments() {
+            const modalContent = document.getElementById('subjectsContainer');
+            modalContent.innerHTML = '';
+            
+            subjects.forEach(subject => {
+                const card = document.createElement('div');
+                card.className = 'bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200';
+                card.innerHTML = `
+                    <h4 class="font-semibold text-gray-800 mb-2">${subject.name}</h4>
+                    <p class="text-sm text-gray-600 mb-3">${subject.description}</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500">ឯកសារ: ${subject.documents}</span>
+                        <button onclick="viewSubjectDetail(${subject.id})" class="text-blue-600 hover:text-blue-800 text-sm">
+                            <i class="fas fa-eye mr-1"></i>មើលលម្អិត
+                        </button>
+                    </div>
+                `;
+                modalContent.appendChild(card);
+            });
+            
+            openModal('activeDocumentsModal');
+        }
+
+        function viewSubjectDetail(subjectId) {
+            const subject = subjects.find(s => s.id === subjectId);
+            document.getElementById('subjectDetailTitle').textContent = subject.name;
+            document.getElementById('subjectDetailContent').innerHTML = subject.detail;
+            closeModal('activeDocumentsModal');
+            openModal('subjectDetailModal');
+        }
+
+        function showReports() {
+            openModal('reportsModal');
+        }
+
+        function showSubjectReports() {
+            const container = document.getElementById('subjectReportsContainer');
+            container.innerHTML = '';
+            
+            subjects.forEach(subject => {
+                // Generate random performance data for demonstration
+                const avgScore = Math.floor(Math.random() * 30) + 70;
+                const completionRate = Math.floor(Math.random() * 20) + 80;
+                const studentCount = Math.floor(Math.random() * 50) + 50;
+                
+                const card = document.createElement('div');
+                card.className = 'bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200';
+                card.innerHTML = `
+                    <h4 class="font-semibold text-gray-800 mb-2">${subject.name}</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">ពិន្ទុមធ្យម:</span>
+                            <span class="text-sm font-medium">${avgScore}%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">អត្រាបញ្ចប់:</span>
+                            <span class="text-sm font-medium">${completionRate}%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">ចំនួននិស្សិត:</span>
+                            <span class="text-sm font-medium">${studentCount}</span>
+                        </div>
+                    </div>
+                    <div class="mt-3 pt-3 border-t border-gray-200">
+                        <div class="flex space-x-2">
+                            <button class="flex-1 bg-blue-100 text-blue-700 px-3 py-1 rounded text-sm hover:bg-blue-200">
+                                ទាញយករបាយការណ៍
+                            </button>
+                            <button class="flex-1 bg-green-100 text-green-700 px-3 py-1 rounded text-sm hover:bg-green-200">
+                                មើលលម្អិត
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            
+            closeModal('reportsModal');
+            openModal('subjectReportsModal');
+        }
+
+        function showAttendanceReports() {
+            const tableBody = document.getElementById('attendanceTable');
+            const chartContainer = document.getElementById('attendanceChart');
+            
+            // Populate attendance table
+            tableBody.innerHTML = '';
+            subjects.forEach(subject => {
+                const totalHours = 30;
+                const attendedHours = Math.floor(Math.random() * 10) + 20;
+                const attendanceRate = Math.round((attendedHours / totalHours) * 100);
+                const status = attendanceRate >= 80 ? 'ល្អ' : attendanceRate >= 60 ? 'មធ្យម' : 'ត្រូវការកែលម្អ';
+                const statusColor = attendanceRate >= 80 ? 'text-green-600' : attendanceRate >= 60 ? 'text-yellow-600' : 'text-red-600';
+                
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-4 py-3 text-sm text-gray-900">${subject.name}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${totalHours}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${attendedHours}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${attendanceRate}%</td>
+                    <td class="px-4 py-3 text-sm ${statusColor}">${status}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // Create simple bar chart for attendance by month
+            chartContainer.innerHTML = '';
+            const months = ['មករា', 'កុម្ភៈ', 'មីនា', 'មេសា', 'ឧសភា', 'មិថុនា'];
+            months.forEach(month => {
+                const barHeight = Math.floor(Math.random() * 100) + 50;
+                const bar = document.createElement('div');
+                bar.className = 'flex flex-col items-center';
+                bar.innerHTML = `
+                    <div class="w-8 bg-blue-500 rounded-t" style="height: ${barHeight}px"></div>
+                    <span class="text-xs mt-1">${month}</span>
+                `;
+                chartContainer.appendChild(bar);
+            });
+            
+            closeModal('reportsModal');
+            openModal('attendanceReportsModal');
+        }
+
+        function showPerformanceReports() {
+            const tableBody = document.getElementById('performanceTable');
+            const chartContainer = document.getElementById('performanceChart');
+            
+            // Populate performance table
+            tableBody.innerHTML = '';
+            subjects.forEach(subject => {
+                const avgScore = Math.floor(Math.random() * 20) + 75;
+                const maxScore = Math.floor(Math.random() * 10) + 90;
+                const minScore = Math.floor(Math.random() * 30) + 50;
+                const passRate = Math.floor(Math.random() * 20) + 80;
+                
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-4 py-3 text-sm text-gray-900">${subject.name}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${avgScore}%</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${maxScore}%</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${minScore}%</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${passRate}%</td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // Create performance distribution chart
+            chartContainer.innerHTML = '';
+            const performanceLevels = [
+                { level: 'ល្អណាស់', color: 'bg-green-500', percentage: 25 },
+                { level: 'ល្អ', color: 'bg-blue-500', percentage: 45 },
+                { level: 'មធ្យម', color: 'bg-yellow-500', percentage: 20 },
+                { level: 'ត្រូវការកែលម្អ', color: 'bg-red-500', percentage: 10 }
+            ];
+            
+            performanceLevels.forEach(level => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-4 rounded-lg border border-gray-200';
+                card.innerHTML = `
+                    <div class="flex items-center mb-2">
+                        <div class="w-4 h-4 ${level.color} rounded-full mr-2"></div>
+                        <span class="text-sm font-medium">${level.level}</span>
+                    </div>
+                    <div class="text-2xl font-bold">${level.percentage}%</div>
+                    <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                        <div class="${level.color} h-2 rounded-full" style="width: ${level.percentage}%"></div>
+                    </div>
+                `;
+                chartContainer.appendChild(card);
+            });
+            
+            closeModal('reportsModal');
+            openModal('performanceReportsModal');
+        }
+
+        function showSettings() {
+            openModal('settingsModal');
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+    </script>
+</body>
+</html>
