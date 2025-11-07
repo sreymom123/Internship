@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="km">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ផ្ទាំងអ្នកចាត់តាំង - ប្រព័ន្ធគ្រប់គ្រងកម្មសិក្សា</title>
+    <title>Mentor Dashboard - Internship Management System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="../static/css/main.css">
     <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -17,11 +17,11 @@
         <div class="max-w-7xl mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 class="text-xl font-bold text-gray-900" id="welcomeMessage">ផ្ទាំងអ្នកចាត់តាំង</h1>
+                    <h1 class="text-xl font-bold text-gray-900" id="welcomeMessage">Mentor Dashboard</h1>
                     <p class="text-sm text-gray-500" id="userInfo"></p>
                 </div>
                 <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
-                    ចាកចេញ
+                    Logout
                 </button>
             </div>
         </div>
@@ -29,8 +29,8 @@
     
     <main class="max-w-7xl mx-auto px-4 py-8">
         <div class="bg-white rounded-xl shadow-sm p-8 text-center">
-            <h2 class="text-3xl font-bold text-gray-800 mb-4" id="mentorWelcome">ស្វាគមន៍ អ្នកចាត់តាំង!</h2>
-            <p class="text-gray-600 text-lg">ទំព័រនេះសម្រាប់អ្នកចាត់តាំងកម្មសិក្សា</p>
+            <h2 class="text-3xl font-bold text-gray-800 mb-4" id="mentorWelcome">Welcome, Mentor!</h2>
+            <p class="text-gray-600 text-lg">This page is for internship mentors</p>
         </div>
     </main>
 
@@ -40,18 +40,18 @@
             const currentUser = window.api ? window.api.getCurrentUser() : JSON.parse(localStorage.getItem('currentUser'));
             
             if (!currentUser || currentUser.role !== 'mentor') {
-                alert('អ្នកមិនមានសិទ្ធិចូលទៅកាន់ទំព័រនេះទេ។');
+                alert('You do not have permission to access this page.');
                 window.location.href = 'login.html';
                 return;
             }
 
             // Update UI with user info
             document.getElementById('mentorWelcome').textContent = 
-                `ស្វាគមន៍ ${currentUser.first_name} ${currentUser.last_name}!`;
+                `Welcome ${currentUser.first_name} ${currentUser.last_name}!`;
             document.getElementById('welcomeMessage').textContent = 
-                `ផ្ទាំងអ្នកចាត់តាំង - ${currentUser.first_name} ${currentUser.last_name}`;
+                `Mentor Dashboard - ${currentUser.first_name} ${currentUser.last_name}`;
             document.getElementById('userInfo').textContent = 
-                `${currentUser.email} - អ្នកចាត់តាំង`;
+                `${currentUser.email} - Mentor`;
         });
 
         function logout() {

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="km">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ការចូលប្រើប្រាស់ - ប្រព័ន្ធគ្រប់គ្រងកម្មសិក្សា</title>
+    <title>Login - Internship Management System</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="../static/css/main.css">
@@ -18,7 +18,7 @@
         <div class="mb-4">
             <a href="/" class="inline-flex items-center text-blue-600 hover:text-blue-800">
                 <i class="fas fa-arrow-left mr-2"></i>
-                <span>ត្រឡប់ទៅទំព័រដើម</span>
+                <span>Back to Home</span>
             </a>
         </div>
 
@@ -29,8 +29,8 @@
                     <div class="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-users text-indigo-600 text-3xl"></i>
                     </div>
-                    <h2 class="text-2xl font-bold text-gray-800">ជ្រើសរើសតួនាទីរបស់អ្នក</h2>
-                    <p class="text-gray-600 mt-2">ជ្រើសរើសតួនាទីរបស់អ្នកដើម្បីចូលប្រើប្រាស់ប្រព័ន្ធ</p>
+                    <h2 class="text-2xl font-bold text-gray-800">Select Your Role</h2>
+                    <p class="text-gray-600 mt-2">Choose your role to access the system</p>
                 </div>
 
                 <!-- Role Selection Cards -->
@@ -46,8 +46,8 @@
                                 <i class="fas fa-user-graduate text-green-600 text-xl"></i>
                             </div>
                             <div class="flex-1">
-                                <h3 class="text-lg font-semibold text-gray-800">និស្សិត</h3>
-                                <p class="text-sm text-gray-600 mt-1">ចូលប្រើប្រាស់ជានិស្សិត</p>
+                                <h3 class="text-lg font-semibold text-gray-800">Student</h3>
+                                <p class="text-sm text-gray-600 mt-1">Login as Student</p>
                             </div>
                             <div class="w-6 h-6 rounded-full border-2 border-gray-300" id="studentCheck">
                                 <div class="w-full h-full rounded-full bg-green-500 hidden"></div>
@@ -56,15 +56,15 @@
                         <ul class="mt-4 text-sm text-gray-600 space-y-2">
                             <li class="flex items-center">
                                 <i class="fas fa-check text-green-500 mr-2"></i>
-                                ដាក់ពាក្យស្នើសុំកម្មសិក្សា
+                                Apply for internships
                             </li>
                             <li class="flex items-center">
                                 <i class="fas fa-check text-green-500 mr-2"></i>
-                                តាមដានស្ថានភាពពាក្យស្នើសុំ
+                                Track application status
                             </li>
                             <li class="flex items-center">
                                 <i class="fas fa-check text-green-500 mr-2"></i>
-                                ទាញយកឯកសារទាក់ទង
+                                Download related documents
                             </li>
                         </ul>
                     </div>
@@ -80,8 +80,8 @@
                                 <i class="fas fa-user-shield text-purple-600 text-xl"></i>
                             </div>
                             <div class="flex-1">
-                                <h3 class="text-lg font-semibold text-gray-800">អ្នកគ្រប់គ្រង</h3>
-                                <p class="text-sm text-gray-600 mt-1">ចូលប្រើប្រាស់ជាអ្នកគ្រប់គ្រង</p>
+                                <h3 class="text-lg font-semibold text-gray-800">Manager</h3>
+                                <p class="text-sm text-gray-600 mt-1">Login as Manager</p>
                             </div>
                             <div class="w-6 h-6 rounded-full border-2 border-gray-300" id="adminCheck">
                                 <div class="w-full h-full rounded-full bg-purple-500 hidden"></div>
@@ -90,15 +90,15 @@
                         <ul class="mt-4 text-sm text-gray-600 space-y-2">
                             <li class="flex items-center">
                                 <i class="fas fa-check text-purple-500 mr-2"></i>
-                                គ្រប់គ្រងគណនីនិស្សិត
+                                Manage student accounts
                             </li>
                             <li class="flex items-center">
                                 <i class="fas fa-check text-purple-500 mr-2"></i>
-                                មើលប្រវត្តិការចូលនិស្សិត
+                                View student login history
                             </li>
                             <li class="flex items-center">
                                 <i class="fas fa-check text-purple-500 mr-2"></i>
-                                ផ្សព្វផ្សាយព័ត៌មានសម្រាប់និស្សិត
+                                Publish information for students
                             </li>
                         </ul>
                     </div>
@@ -106,11 +106,11 @@
 
                 <!-- Demo Accounts -->
                 <div class="mt-8 pt-6 border-t border-gray-200">
-                    <h3 class="text-sm font-medium text-gray-700 text-center mb-4">គណនីសាកល្បង</h3>
+                    <h3 class="text-sm font-medium text-gray-700 text-center mb-4">Demo Accounts</h3>
                     <div class="space-y-3">
                         <!-- Student Demo Account -->
                         <div 
-                            onclick="fillDemoAccount('student', 'និស្សិតឧទាហរណ៍', 'student@example.com', 'password123')"
+                            onclick="fillDemoAccount('student', 'Example Student', 'student@example.com', 'password123')"
                             class="flex items-center p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition duration-200"
                         >
                             <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
@@ -119,15 +119,15 @@
                             <div class="flex-1">
                                 <div class="flex items-center">
                                     <span class="text-sm font-medium text-gray-800">student@example.com</span>
-                                    <span class="ml-2 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">និស្សិត</span>
+                                    <span class="ml-2 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Student</span>
                                 </div>
-                                <p class="text-xs text-gray-500 mt-1">ពាក្យសម្ងាត់: password123</p>
+                                <p class="text-xs text-gray-500 mt-1">Password: password123</p>
                             </div>
                         </div>
 
                         <!-- Admin Demo Account -->
                         <div 
-                            onclick="fillDemoAccount('admin', 'អ្នកគ្រប់គ្រងឧទាហរណ៍', 'admin@example.com', 'admin123')"
+                            onclick="fillDemoAccount('admin', 'Example Manager', 'admin@example.com', 'admin123')"
                             class="flex items-center p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition duration-200"
                         >
                             <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
@@ -136,9 +136,9 @@
                             <div class="flex-1">
                                 <div class="flex items-center">
                                     <span class="text-sm font-medium text-gray-800">admin@example.com</span>
-                                    <span class="ml-2 px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">អ្នកគ្រប់គ្រង</span>
+                                    <span class="ml-2 px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">Manager</span>
                                 </div>
-                                <p class="text-xs text-gray-500 mt-1">ពាក្យសម្ងាត់: admin123</p>
+                                <p class="text-xs text-gray-500 mt-1">Password: admin123</p>
                             </div>
                         </div>
                     </div>
@@ -154,8 +154,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                         </svg>
                     </div>
-                    <h2 class="text-2xl font-bold text-gray-800" id="formTitle">ការចូលប្រើប្រាស់</h2>
-                    <p class="text-gray-600 mt-2" id="formSubtitle">ជ្រើសរើសតួនាទីរបស់អ្នកជាមុន</p>
+                    <h2 class="text-2xl font-bold text-gray-800" id="formTitle">Login</h2>
+                    <p class="text-gray-600 mt-2" id="formSubtitle">Select your role first</p>
                     <div id="roleBadge" class="hidden mt-2">
                         <span id="selectedRoleBadge" class="px-3 py-1 rounded-full text-sm font-medium"></span>
                     </div>
@@ -165,14 +165,14 @@
                 <form id="loginForm" class="space-y-6">
                     <!-- Username Input -->
                     <div>
-                        <label for="username" class="block text-sm font-medium text-gray-700 mb-2">ឈ្មោះអ្នកប្រើប្រាស់</label>
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
                         <div class="relative">
                             <input 
                                 type="text" 
                                 id="username" 
                                 required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
-                                placeholder="បញ្ចូលឈ្មោះអ្នកប្រើប្រាស់"
+                                placeholder="Enter your username"
                                 disabled
                             >
                             <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -185,14 +185,14 @@
 
                     <!-- Email Input -->
                     <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">អ៊ីមែល</label>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
                         <div class="relative">
                             <input 
                                 type="email" 
                                 id="email" 
                                 required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
-                                placeholder="បញ្ចូលអ៊ីមែលរបស់អ្នក"
+                                placeholder="Enter your email"
                                 disabled
                             >
                             <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -205,14 +205,14 @@
 
                     <!-- Password Input -->
                     <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">ពាក្យសម្ងាត់</label>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
                         <div class="relative">
                             <input 
                                 type="password" 
                                 id="password" 
                                 required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
-                                placeholder="បញ្ចូលពាក្យសម្ងាត់របស់អ្នក"
+                                placeholder="Enter your password"
                                 disabled
                             >
                             <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -232,9 +232,9 @@
                                 class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                                 disabled
                             >
-                            <label for="remember" class="ml-2 block text-sm text-gray-700">ចងចាំខ្ញុំ</label>
+                            <label for="remember" class="ml-2 block text-sm text-gray-700">Remember me</label>
                         </div>
-                        <a href="#" class="text-sm text-indigo-600 hover:text-indigo-500">ភ្លេចពាក្យសម្ងាត់?</a>
+                        <a href="#" class="text-sm text-indigo-600 hover:text-indigo-500">Forgot password?</a>
                     </div>
 
                     <!-- Submit Button -->
@@ -244,7 +244,7 @@
                         class="w-full bg-gray-400 text-white py-3 px-4 rounded-lg cursor-not-allowed transition duration-200 font-medium"
                         disabled
                     >
-                        ជ្រើសរើសតួនាទីជាមុន
+                        Select Role First
                     </button>
                 </form>
 
@@ -255,7 +255,7 @@
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        <span class="text-blue-600 font-medium">កំពុងដំណើរការ...</span>
+                        <span class="text-blue-600 font-medium">Processing...</span>
                     </div>
                 </div>
 
@@ -273,7 +273,7 @@
 
         <!-- Footer -->
         <div class="text-center mt-6">
-            <p class="text-sm text-gray-600">© 2024 ប្រព័ន្ធគ្រប់គ្រងកម្មសិក្សា. រក្សាសិទ្ធិគ្រប់យ៉ាង.</p>
+            <p class="text-sm text-gray-600">© 2025 Internship Management System. All rights reserved.</p>
         </div>
     </div>
 
@@ -305,17 +305,17 @@
                 document.getElementById('studentRole').classList.add('active', 'border-green-400');
                 document.getElementById('studentCheck').querySelector('div').classList.remove('hidden');
                 
-                document.getElementById('formTitle').textContent = 'ការចូលប្រើប្រាស់ - និស្សិត';
-                document.getElementById('formSubtitle').textContent = 'បំពេញព័ត៌មានរបស់អ្នកជានិស្សិត';
-                document.getElementById('selectedRoleBadge').textContent = 'និស្សិត';
+                document.getElementById('formTitle').textContent = 'Login - Student';
+                document.getElementById('formSubtitle').textContent = 'Fill in your information as a student';
+                document.getElementById('selectedRoleBadge').textContent = 'Student';
                 document.getElementById('selectedRoleBadge').className = 'px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800';
             } else if (role === 'admin') {
                 document.getElementById('adminRole').classList.add('active', 'border-purple-400');
                 document.getElementById('adminCheck').querySelector('div').classList.remove('hidden');
                 
-                document.getElementById('formTitle').textContent = 'ការចូលប្រើប្រាស់ - អ្នកគ្រប់គ្រង';
-                document.getElementById('formSubtitle').textContent = 'បំពេញព័ត៌មានរបស់អ្នកជាអ្នកគ្រប់គ្រង';
-                document.getElementById('selectedRoleBadge').textContent = 'អ្នកគ្រប់គ្រង';
+                document.getElementById('formTitle').textContent = 'Login - Manager';
+                document.getElementById('formSubtitle').textContent = 'Fill in your information as a manager';
+                document.getElementById('selectedRoleBadge').textContent = 'Manager';
                 document.getElementById('selectedRoleBadge').className = 'px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800';
             }
 
@@ -328,7 +328,7 @@
             });
 
             // Update login button
-            document.getElementById('loginButton').textContent = 'ចូលប្រើប្រាស់ជា ' + (role === 'student' ? 'និស្សិត' : 'អ្នកគ្រប់គ្រង');
+            document.getElementById('loginButton').textContent = 'Login as ' + (role === 'student' ? 'Student' : 'Manager');
             document.getElementById('loginButton').classList.remove('bg-gray-400', 'cursor-not-allowed');
             document.getElementById('loginButton').classList.add('bg-indigo-600', 'hover:bg-indigo-700', 'cursor-pointer');
         }
@@ -342,7 +342,7 @@
             // Show confirmation
             const button = document.getElementById('loginButton');
             const originalText = button.textContent;
-            button.textContent = 'គណនីត្រូវបានបំពេញ!';
+            button.textContent = 'Account filled!';
             button.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
             button.classList.add('bg-green-600', 'hover:bg-green-700');
             
@@ -358,7 +358,7 @@
             e.preventDefault();
             
             if (!selectedRole) {
-                showError('សូមជ្រើសរើសតួនាទីរបស់អ្នកជាមុន');
+                showError('Please select your role first');
                 return;
             }
             
@@ -374,12 +374,12 @@
             errorMessage.classList.add('hidden');
             loadingState.classList.remove('hidden');
             loginButton.disabled = true;
-            loginButton.textContent = 'កំពុងចូល...';
+            loginButton.textContent = 'Logging in...';
             loginButton.classList.add('opacity-75', 'cursor-not-allowed');
             
             // Basic validation
             if (!username || !email || !password) {
-                showError('សូមបំពេញព័ត៌មានទាំងអស់');
+                showError('Please fill in all information');
                 return;
             }
             
@@ -392,8 +392,8 @@
                     username: username,
                     email: email,
                     role: selectedRole,
-                    loginTime: new Date().toLocaleString('km-KH'),
-                    date: new Date().toLocaleDateString('km-KH')
+                    loginTime: new Date().toLocaleString('en-US'),
+                    date: new Date().toLocaleDateString('en-US')
                 };
                 
                 localStorage.setItem('currentUser', JSON.stringify(userData));
@@ -403,7 +403,7 @@
                 loginHistory.unshift(userData);
                 localStorage.setItem('loginHistory', JSON.stringify(loginHistory));
                 
-                loginButton.textContent = 'ចូលបានជោគជ័យ!';
+                loginButton.textContent = 'Login successful!';
                 loginButton.classList.remove('bg-indigo-600');
                 loginButton.classList.add('bg-green-600');
                 
@@ -430,7 +430,7 @@
             const loadingState = document.getElementById('loadingState');
             loadingState.classList.add('hidden');
             loginButton.disabled = false;
-            loginButton.textContent = 'ចូលប្រើប្រាស់ជា ' + (selectedRole === 'student' ? 'និស្សិត' : 'អ្នកគ្រប់គ្រង');
+            loginButton.textContent = 'Login as ' + (selectedRole === 'student' ? 'Student' : 'Manager');
             loginButton.classList.remove('opacity-75', 'cursor-not-allowed');
         }
 
